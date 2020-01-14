@@ -22,6 +22,8 @@ import {
 } from '@expo/vector-icons';
 import { emitNotification } from 'expo/build/Notifications/Notifications';
 
+const host = 'http://57b9f852.ngrok.io'
+
 const images = {
   menuOne: require
 }
@@ -464,7 +466,7 @@ class PicturePreview extends React.Component {
 
 class MenuList extends React.Component{
   render(){
-    let names = ["first", "second", "burrito"]
+    let names = ["Huevos ocn Chariz", "Migas con Huev", "Beef Burrit", "Barbacoa Burrit", "Fiesta Chicken Burrito ", "Vegetarian Burrito ", "Smothered Burrito ", "Carne Asada Plate ", "Quesadilla ", "Carne Asada Steak "]
 
     return(
       <ScrollView>
@@ -485,54 +487,31 @@ class Details extends React.Component{
     };
   };
 
-    
+  componentDidMount() {
+    let formData = new FormData();
+    formData.append('name', 'scrambled eggs');
+    const request = new Request(`${host}/info`, {method: 'POST', body: formData});
+    console.log(request);
+
+  }
 
   render(){
 
     let { navigation } = this.props;
-    const host = 'http://57b9f852.ngrok.io'
-    let formData = new FormData();
-    formData.append('name', 'scrambled eggs');
-
-    const request = new Request(`${host}/info`, {method: 'POST', body: formData});
-    console.log(request);
-
-    const data = `{"image_url": "https://images.media-allrecipes.com/userphotos/560x315/1010465.jpg", "description": "Scrambled eggs is a dish made from eggs (usually chicken eggs) stirred or beaten together in a pan while being gently heated, typically with salt, butter and sometimes other ingredients.", "title": "Scrambled Eggs"}`
-    let infoObject = JSON.parse(data)
-    let descr = infoObject.description;
-    let imageurl = infoObject.image_url;
-    let name = infoObject.title;
-    console.log(data);
-    console.log(request.description);
     
-    // fetch(request)
-    //   .then(response => {
-    //     console.log(response);
-    //     if (response.status === 200) {
-    //       return response;
-    //     } else {
-    //       throw new Error('Something went wrong on api server!');
-    //     }
-    //   })
-    //   .then(response => {
-    //     console.log(response);
-    //     // ...
-    //   }).catch(error => {
-    //     console.error(error);
-    //   });
+    const data = `{"image_url": "https://images.media-allrecipes.com/userphotos/560x315/1010465.jpg", "description": "Scrambled eggs is a dish made from eggs (usually chicken eggs) stirred or beaten together in a pan while being gently heated, typically with salt, butter and sometimes other ingredients.", "title": "Scrambled Eggs"}`
+    let infoObject = JSON.parse(data);
 
     return(
       <ScrollView contentContainerStyle={styles.detailSheet}> 
-        
+      <Text style = {{alignItems: 'center', justifyContent: 'center'}}>{infoObject.title}</Text>
         <Image
-            source = {{uri: imageurl}}
+            source = {{uri: infoObject.image_url}}
             style = {{resizeMode: 'contain', width: 150, height: 150, alignItems: 'center',}}
         />
-        <Text  style = {{flex:1, alignItems: 'center', justifyContent: 'center'}} > {descr} </Text>
-
+        <Text style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}>{infoObject.description}</Text>
       </ScrollView>
     );
-
   }
 }
 
