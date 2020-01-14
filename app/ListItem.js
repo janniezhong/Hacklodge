@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20,
+    paddingBottom: 20,
     backgroundColor: 'white',
   },
   navbar: {

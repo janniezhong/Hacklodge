@@ -399,7 +399,6 @@ class ChoosePictureScreen extends React.Component{
   render(){
     return (
       <View style = {{flex: '1', alignItems: 'center', justifyContent: 'center'}}>
-        <Text>Take or choose a picture</Text>
         <Button
           title="Take picture"
           onPress = {() => this.props.navigation.navigate('CameraScreen')}
@@ -426,6 +425,13 @@ class ChoosePictureScreen extends React.Component{
 }
 
 class PicturePreview extends React.Component {
+
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Preview'
+    };
+  };
+  
   chooseMenu = (menuNum) => {
     if(menuNum == 1){
       return require('./menus/simple-mexican-menu.jpeg');
@@ -441,7 +447,7 @@ class PicturePreview extends React.Component {
       var menuPath = this.chooseMenu(navigation.getParam('menuId'))
       // menuPath = require('./menus/wine-list.jpeg');
       return (
-        <View 
+        <View title = "Preview"
           style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}> 
           <Image style = {{
             resizeMode: 'contain', height: 500, width: 400,
@@ -463,6 +469,13 @@ class PicturePreview extends React.Component {
 
 
 class MenuList extends React.Component{
+
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Menu Items'
+    };
+  };
+
   render(){
     let names = ["first", "second", "burrito"]
 
