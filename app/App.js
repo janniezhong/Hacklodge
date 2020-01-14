@@ -384,6 +384,9 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
   },
+  detailSheet: {
+    alignItems: 'center',
+  }
 });
 
 
@@ -474,23 +477,32 @@ class MenuList extends React.Component{
 
 class Details extends React.Component{
   
-  state = {
-    info: "",
-  }
+  // state = {
+  //   info: "",
+  // }
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.getParam('keyword')
+    };
+  };
+
 
   render(){
-    // const { navigation } = this.props;
-    // const host = 'http://57b9f852.ngrok.io'
-    // let formData = new FormData();
-    // formData.append('name', 'scrambled eggs');
+    const { navigation } = this.props;
+    const host = 'http://57b9f852.ngrok.io'
+    let formData = new FormData();
+    formData.append('name', 'scrambled eggs');
 
-    // const request = new Request(`${host}/info`, {method: 'POST', body: formData});
-    // console.log(request);
-    // this.setState({info: request});
+    const request = new Request(`${host}/info`, {method: 'POST', body: formData});
+    console.log(request);
 
-    // const data = {"image_url": "https://images.media-allrecipes.com/userphotos/560x315/1010465.jpg", "description": "Scrambled eggs is a dish made from eggs (usually chicken eggs) stirred or beaten together in a pan while being gently heated, typically with salt, butter and sometimes other ingredients.", "title": "Scrambled Eggs"}
-    // console.log(data);
-    // console.log(request.description);
+    const data = `{"image_url": "https://images.media-allrecipes.com/userphotos/560x315/1010465.jpg", "description": "Scrambled eggs is a dish made from eggs (usually chicken eggs) stirred or beaten together in a pan while being gently heated, typically with salt, butter and sometimes other ingredients.", "title": "Scrambled Eggs"}`
+    let infoObject = JSON.parse(data)
+    descr = infoObject.description;
+    imageurl = infoObject.image_url;
+    name = infoObject.title;
+    console.log(data);
+    console.log(request.description);
     
     
     // fetch(request)
@@ -510,9 +522,13 @@ class Details extends React.Component{
     //   });
 
     return(
-      <ScrollView style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}> 
+      <ScrollView contentContainerStyle={styles.detailSheet}> 
         
-        <Text></Text>
+        <Image
+            source = {{uri: imageurl}}
+            style = {{resizeMode: 'contain', width: 150, height: 150, alignItems: 'center',}}
+        />
+        <Text  style = {{flex:1, alignItems: 'center', justifyContent: 'center'}} > {descr} </Text>
 
       </ScrollView>
     )
