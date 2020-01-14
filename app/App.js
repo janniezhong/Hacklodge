@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Image, Button, StyleSheet, Text, View, Alert, TouchableOpacity, Slider, Platform } from 'react-native';
+import { ScrollView, Image, Button, StyleSheet, Text, View, Alert, TouchableOpacity, Slider, Platform } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import Constants from 'expo-constants';
 import { Camera } from 'expo-camera'; 
 import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
-import { width, height, totalSize } from 'react-native-dimension';
+//import { width, height, totalSize } from 'react-native-dimension';
 
 import GalleryScreen from './GalleryScreen';
 import isIPhoneX from 'react-native-is-iphonex';
@@ -18,6 +18,11 @@ import {
   MaterialCommunityIcons,
   Octicons
 } from '@expo/vector-icons';
+import { emitNotification } from 'expo/build/Notifications/Notifications';
+
+const images = {
+  menuOne: require
+}
 
 const landmarkSize = 2;
 
@@ -392,7 +397,7 @@ class ChoosePictureScreen extends React.Component{
         <Text>Take or choose a picture</Text>
         <Button
           title="Take picture"
-          onPress = {() => this.props.navigation.navigate('TakePicture')}
+          onPress = {() => this.props.navigation.navigate('CameraScreen')}
         />
         <Button
           title="Upload picture"
@@ -400,52 +405,126 @@ class ChoosePictureScreen extends React.Component{
         />
         <Button
           title="Sample Menu 1"
-          onPress = {() => this.props.navigation.navigate('PicturePreview', {id:1})}
+          onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:1,})}
         />
         <Button
           title="Sample Menu 2"
-          onPress = {() => this.props.navigation.navigate('PicturePreview', {id:2})}
+          onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:2,})}
         />
         <Button
           title="Sample Menu 3"
-          onPress = {() => this.props.navigation.navigate('PicturePreview', {id:3})}
+          onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:3,})}
         />
       </View>
     );
   }
 }
 
-class PicturePreview extends React.Component{
+class PicturePreview extends React.Component {
+  chooseMenu = (menuNum) => {
+    if(menuNum == 1){
+      return require('./menus/simple-mexican-menu.jpeg');
+    } else if (menuNum == 2){
+      return require('./menus/wine-list.jpeg');
+    } else {
+      return require('./menus/mexican_menu.jpeg');
+    }
+  }  
+
     render(){
+      const { navigation } = this.props;
+      var menuPath = this.chooseMenu(navigation.getParam('menuId'))
+      // menuPath = require('./menus/wine-list.jpeg');
       return (
         <View 
           style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}> 
           <Image style = {{
-            resizeMode: 'contain', height: 500, width: 500,
+            resizeMode: 'contain', height: 500, width: 400,
           }}
-          source = {require('./menus/simple-mexican-menu.jpeg')}/>
+            source = {menuPath}
+          />
+          <Button 
+            title = "Next"
+            onPress={() => {
+              this.props.navigation.navigate('MenuList');
+            }}
+          />
         </View>
       )
     }
-    
 
 }
 
-class TakePicture extends React.Component{
+
+
+class MenuList extends React.Component{
   render(){
     return(
-      <View style = {{alignItems: 'center', justifyContent: 'center'}}>
-      </View>
+      <ScrollView>
+        <Button 
+          title = "Scrambled Eggs"
+          onPress={() => {
+            this.props.navigation.navigate('Details', {keyword: "Scrambled Eggs"})
+          }}
+        />
+      </ScrollView>
     );
   }
+}
 
+class Details extends React.Component{
+  
+  state = {
+    info: "",
+  }
+
+  render(){
+    // const { navigation } = this.props;
+    // const host = 'http://57b9f852.ngrok.io'
+    // let formData = new FormData();
+    // formData.append('name', 'scrambled eggs');
+
+    // const request = new Request(`${host}/info`, {method: 'POST', body: formData});
+    // console.log(request);
+    // this.setState({info: request});
+
+    // const data = {"image_url": "https://images.media-allrecipes.com/userphotos/560x315/1010465.jpg", "description": "Scrambled eggs is a dish made from eggs (usually chicken eggs) stirred or beaten together in a pan while being gently heated, typically with salt, butter and sometimes other ingredients.", "title": "Scrambled Eggs"}
+    // console.log(data);
+    // console.log(request.description);
+    
+    
+    // fetch(request)
+    //   .then(response => {
+    //     console.log(response);
+    //     if (response.status === 200) {
+    //       return response;
+    //     } else {
+    //       throw new Error('Something went wrong on api server!');
+    //     }
+    //   })
+    //   .then(response => {
+    //     console.log(response);
+    //     // ...
+    //   }).catch(error => {
+    //     console.error(error);
+    //   });
+
+    return(
+      <ScrollView style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}> 
+        
+        <Text></Text>
+
+      </ScrollView>
+    )
+
+  }
 }
 
 class UploadPicture extends React.Component{
   render(){
     return(
       <View style = {{alignItems: 'center', justifyContent: 'center'}}>
-        <Text>Uploading Picture</Text>
+        <Text>Upload Picture</Text>
       </View>
     );
   }
@@ -456,7 +535,7 @@ const AppNavigator = createStackNavigator({
   Home: {
     screen: ChoosePictureScreen,
   },
-  TakePicture:{
+  CameraScreen:{
     screen: CameraScreen,
   },
   UploadPicture:{
@@ -464,6 +543,12 @@ const AppNavigator = createStackNavigator({
   },
   PicturePreview:{
     screen: PicturePreview,
+  },
+  MenuList:{
+    screen: MenuList,
+  },
+  Details:{
+    screen: Details,
   },
 },
  {
