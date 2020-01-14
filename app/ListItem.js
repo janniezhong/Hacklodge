@@ -12,7 +12,6 @@ export default class ListItem extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>asdf</Text>
         <Button 
           title={this.props.menuItemName}
           onPress={() => {
