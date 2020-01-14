@@ -25,5 +25,7 @@ def info(name):
 	}
 	return json.dumps(returnDict)
 
+# @app.route("/ocr/")
+
 if __name__ == "__main__":
     app.run()
