@@ -1,19 +1,26 @@
 <html>
 	<head></head>
 	<body>
+		request to info:
+		<form action="./info" method="POST">
+			name:<input type="text" name="name" value="scrambled eggs" />
+			<input type="submit" />
+		</form>
+		<br>
+
+		request to ocr:
+		<form action="./ocr" method="POST">
+			url:<input type="text" name="url" value="https://marketplace.canva.com/EADaoJv_rFk/1/0/618w/canva-red-brown-simple-mexican-menu-6nt2YAg2IKI.jpg" />
+			<input type="submit" />
+		</form>
+		<br>
+
 		request to testpost:
 		<form action="./posttest" method="POST">
 			<input type="text" name="postvalue" value="testvalue"/>
 			<input type="submit" />
 		</form>
-
 		<br>
-
-		request to ocr:
-		<form action="./ocr" method="POST">
-			<input type="text" name="postvalue" value="testvalue"/>
-			<input type="submit" />
-		</form>
 
 	</body>
 </html>
