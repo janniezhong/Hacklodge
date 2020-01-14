@@ -491,9 +491,10 @@ class MenuList extends React.Component{
 
 class Details extends React.Component{
   
-  // state = {
-  //   info: "",
-  // }
+  state = {
+    data: { image_url: '', image_url: '', description:'' },
+
+  }
   static navigationOptions = ({ navigation }) => {
     return {
       title: navigation.getParam('keyword')
@@ -503,26 +504,32 @@ class Details extends React.Component{
   componentDidMount() {
     let formData = new FormData();
     formData.append('name', 'scrambled eggs');
-    const request = new Request(`${host}/info`, {method: 'POST', body: formData});
-    console.log(request);
 
+    fetch(`${host}/info`, {
+      method:'POST',
+      body: formData
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Success:', data);
+      this.setState({data: data});
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
-
   render(){
 
     let { navigation } = this.props;
-    
-    const data = `{"image_url": "https://images.media-allrecipes.com/userphotos/560x315/1010465.jpg", "description": "Scrambled eggs is a dish made from eggs (usually chicken eggs) stirred or beaten together in a pan while being gently heated, typically with salt, butter and sometimes other ingredients.", "title": "Scrambled Eggs"}`
-    let infoObject = JSON.parse(data);
 
     return(
       <ScrollView contentContainerStyle={styles.detailSheet}> 
-      <Text style = {{alignItems: 'center', justifyContent: 'center'}}>{infoObject.title}</Text>
+      <Text style = {{alignItems: 'center', justifyContent: 'center'}}>{this.state.data.title}</Text>
         <Image
-            source = {{uri: infoObject.image_url}}
+            source = {{uri: this.state.data.image_url}}
             style = {{resizeMode: 'contain', width: 150, height: 150, alignItems: 'center',}}
         />
-        <Text style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}>{infoObject.description}</Text>
+        <Text style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}>{this.state.data.description}</Text>
       </ScrollView>
     );
   }
