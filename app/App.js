@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { Button, StyleSheet, Text, View, Alert, TouchableOpacity, Slider, Platform } from 'react-native';
+import { Image, Button, StyleSheet, Text, View, Alert, TouchableOpacity, Slider, Platform } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import Constants from 'expo-constants';
 import { Camera } from 'expo-camera'; 
 import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
+import { width, height, totalSize } from 'react-native-dimension';
 
 import GalleryScreen from './GalleryScreen';
 import isIPhoneX from 'react-native-is-iphonex';
@@ -19,6 +20,9 @@ import {
 } from '@expo/vector-icons';
 
 const landmarkSize = 2;
+
+// const windowWidth = Dimensions.get('window').width;
+// const windowHeight = Dimensions.get('window').height;
 
 const flashModeOrder = {
   off: 'on',
@@ -384,7 +388,7 @@ const styles = StyleSheet.create({
 class ChoosePictureScreen extends React.Component{
   render(){
     return (
-      <View style = {{alignItems: 'center', justifyContent: 'center'}}>
+      <View style = {{flex: '1', alignItems: 'center', justifyContent: 'center'}}>
         <Text>Take or choose a picture</Text>
         <Button
           title="Take picture"
@@ -394,9 +398,37 @@ class ChoosePictureScreen extends React.Component{
           title="Upload picture"
           onPress = {() => this.props.navigation.navigate('UploadPicture')}
         />
+        <Button
+          title="Sample Menu 1"
+          onPress = {() => this.props.navigation.navigate('PicturePreview', {id:1})}
+        />
+        <Button
+          title="Sample Menu 2"
+          onPress = {() => this.props.navigation.navigate('PicturePreview', {id:2})}
+        />
+        <Button
+          title="Sample Menu 3"
+          onPress = {() => this.props.navigation.navigate('PicturePreview', {id:3})}
+        />
       </View>
     );
   }
+}
+
+class PicturePreview extends React.Component{
+    render(){
+      return (
+        <View 
+          style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}> 
+          <Image style = {{
+            resizeMode: 'contain', height: 500, width: 500,
+          }}
+          source = {require('./menus/simple-mexican-menu.jpeg')}/>
+        </View>
+      )
+    }
+    
+
 }
 
 class TakePicture extends React.Component{
@@ -429,8 +461,12 @@ const AppNavigator = createStackNavigator({
   },
   UploadPicture:{
     screen: UploadPicture,
-  }
-}, {
+  },
+  PicturePreview:{
+    screen: PicturePreview,
+  },
+},
+ {
   initialRouteName: 'Home',
 }
 );
