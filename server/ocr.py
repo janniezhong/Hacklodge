@@ -3,95 +3,101 @@ try:
 except ImportError:
     import Image
 import pytesseract
+import re
 
 # basic arithmetic mean helper function
 def ocrmean(item):
 	return 0.5*(item.get('right')+item.get('left'))
 
-# If you don't have tesseract executable in your PATH, include the following:
 pytesseract.pytesseract.tesseract_cmd = r'/usr/local/bin/tesseract'
-# Example tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract'
 
-teststr_1 = './static/menu1.jpeg'
+# later: https://57b9f852.ngrok.io/static/menu1.jpeg
 
-# Get bounding box estimates
-box_data = pytesseract.image_to_boxes(Image.open(teststr_1), output_type=pytesseract.Output.DICT)
+def do_ocr(url):
+	teststr_1 = url
+	box_data = pytesseract.image_to_boxes(Image.open(teststr_1), output_type=pytesseract.Output.DICT)
 
-# print box_data.keys()
-# [u'right', u'bottom', u'top', u'char', u'page', u'left']
+	# print box_data.keys()
+	# [u'right', u'bottom', u'top', u'char', u'page', u'left']
 
-numChars = len(box_data.get('right'))
+	numChars = len(box_data.get('right'))
 
-# convert dict of lists to list of dicts
+	# convert dict of lists to list of dicts
 
-charList = []
-for i in range(numChars):
-	charList.append({
-		'char':   box_data.get('char')[i],
-		'right':  box_data.get('right')[i],
-		'bottom': box_data.get('bottom')[i],
-		'left':   box_data.get('left')[i],
-		'top':    box_data.get('top')[i]
-	})
+	charList = []
+	for i in range(numChars):
+		charList.append({
+			'char':   box_data.get('char')[i],
+			'right':  box_data.get('right')[i],
+			'bottom': box_data.get('bottom')[i],
+			'left':   box_data.get('left')[i],
+			'top':    box_data.get('top')[i]
+		})
 
-sortByTop = sorted(charList, key=lambda item: item.get('top'))
+	sortByTop = sorted(charList, key=lambda item: item.get('top'))
 
-unsortedWords = [[]]
+	unsortedWords = [[]]
 
-for i in range(numChars-1):
-	diff = sortByTop[i+1].get('top')-sortByTop[i].get('top')
-	unsortedWords[-1].append(sortByTop[i])
+	for i in range(numChars-1):
+		diff = sortByTop[i+1].get('top')-sortByTop[i].get('top')
+		unsortedWords[-1].append(sortByTop[i])
 
-	if diff > 7: # 
-		unsortedWords.append([])
+		if diff > 7: # 
+			unsortedWords.append([])
 
-	if i == numChars-1:
-		unsortedWords[-1].append(sortByTop[-1])
+		if i == numChars-1:
+			unsortedWords[-1].append(sortByTop[-1])
 
-# exclude words based on different formatting
+	# exclude words based on different formatting
 
-while i < len(unsortedWords):
-	word = ''.join(map(lambda item: item.get('char'), unsortedWords[i]))
-	if ''.join(map(lambda item: item.get('char'), unsortedWords[i])).isupper():
-		print 'matched'+''.join(map(lambda item: item.get('char'), unsortedWords[i]))
-		# del unsortedWords[i]
-		# i-=1
-	i+=1
+	wi = 0
+	while wi < len(unsortedWords):
+		word = ''.join(map(lambda item: item.get('char'), unsortedWords[wi]))
+		if ''.join(map(lambda item: item.get('char'), unsortedWords[wi])).isupper():
+			del unsortedWords[wi]
+			wi-=1
+		wi+=1
 
-# now, sort words
+	# now, sort words
 
-for i in range(len(unsortedWords)):
-	sortedWord = sorted(unsortedWords[i], key=ocrmean)
+	wordList = []
+	for i in range(len(unsortedWords)):
+		sortedWord = sorted(unsortedWords[i], key=ocrmean)
 
-	# now, add spaces
-	myWord = []
-	for j in range(len(sortedWord)-1):
-		myWord.append(sortedWord[j].get('char'))
-		diff = sortedWord[j+1].get('left')-sortedWord[j].get('right')
-		if(diff > 4):
-			myWord.append(' ')
-
-	print ''.join(myWord)
-
+		# now, add spaces
+		myWord = []
+		for j in range(len(sortedWord)-1):
+			myWord.append(sortedWord[j].get('char'))
+			diff = sortedWord[j+1].get('left')-sortedWord[j].get('right')
+			if(diff > 4):
+				myWord.append(' ')
 
 
-# myWord = []
-# for j in range(len(sortedWord)):
-# 	myWord.append(sortedWord[j].get('char'))
+		wordList.append(''.join(myWord))
 
-# print ''.join(myWord)
+	# finally, clean words
 
+	def clean_text(rgx_list, text):
+	    new_text = text
+	    for rgx_match in rgx_list:
+	        new_text = re.sub(rgx_match, '', new_text)
+	    return new_text
 
+	regex_list = ['(\\$|[0-9]|\\.)+']
+	# clean_text(regex_list, wordList)
 
+	wordList = map(lambda item: clean_text(regex_list, item), wordList)
 
-# first sort characters by top
+	# TODO remove this dumb fix for trailing spaces and trailing element
+	# [u'Carne Asada Steak ', u'Quesadilla ', u'Carne Asada Plate ', u'Smothered Burrito ', u'Vegetarian Burrito ', u'Fiesta Chicken Burrito ', u'Barbacoa Burrit', u'Beef Burrit', u'Migas con Huev', u'Huevos ocn Chariz', '']
 
+	del wordList[-1]
 
+	for i in range(len(wordList)):
+		while wordList[i][-1] == ' ':
+			wordList[i] = wordList[i][:-1]
 
-# find largest gaps, and group into strings
-
-# create subarrays
-
-# sort individual subarrays by left
-
-# convert subarrays to strings
+	returnDict = {
+		"item_list": wordList
+	}
+	return returnDict

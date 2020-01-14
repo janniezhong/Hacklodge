@@ -1,6 +1,6 @@
 import requests
-import re
 from bs4 import BeautifulSoup
+import re
 
 GOOGLE_CX_STR = "017764573668867698617:wfsi6hryv8w"
 GOOGLE_API_KEY = "AIzaSyC5XBcVJYQeAvln406kzMzTGJwFEwyZQ9I"

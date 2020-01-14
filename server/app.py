@@ -1,9 +1,16 @@
-import json
+# import environment variables
 from environment import *
 
-from scrub import *
-# from ocr import *
+# general imports
+import json
 
+# scrub imports
+from scrub import *
+
+# ocr imports
+from ocr import *
+
+# flask server
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
@@ -33,11 +40,21 @@ def info():
 
 @app.route("/ocr", methods=['POST'])
 def ocr():
-	return request.form
+	menuid = request.form.get('menu_id')
+	print menuid
+
+	myUrl = './static/menu1.jpeg'
+	if menuid == '2':
+		myUrl = './static/menu2.jpeg'
+		print myUrl
+	elif menuid == '3':
+		myUrl = './static/menu3.jpeg'
+
+	returnDict = do_ocr(myUrl)
+	return json.dumps(returnDict)
 
 
 # for debugging
-
 @app.route("/posttest", methods=['POST'])
 def posttest():
     return json.dumps(request.form)
