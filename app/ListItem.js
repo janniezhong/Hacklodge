@@ -15,7 +15,7 @@ export default class ListItem extends React.Component {
         <Button 
           title={this.props.menuItemName}
           onPress={() => {
-            this.props.navigation.navigate('Details', {keyword: this.props.menuItemName})
+            this.props.navigation.navigate('Details', {menuItemName: this.props.menuItemName})
           }}
         />
       </View>

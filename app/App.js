@@ -9,25 +9,11 @@ import * as Permissions from 'expo-permissions';
 //import { width, height, totalSize } from 'react-native-dimension';
 import ListItem from './ListItem';
 
-import { 
-  Ionicons,
-  MaterialIcons,
-  Foundation,
-  MaterialCommunityIcons,
-  Octicons
-} from '@expo/vector-icons';
-import { emitNotification } from 'expo/build/Notifications/Notifications';
-
 const host = 'http://57b9f852.ngrok.io'
 
 const images = {
   menuOne: require
 }
-
-const landmarkSize = 2;
-
-// const windowWidth = Dimensions.get('window').width;
-// const windowHeight = Dimensions.get('window').height;
 
 class HomeScreen extends React.Component{
   render(){
@@ -35,7 +21,7 @@ class HomeScreen extends React.Component{
       <View style = {{flex: '1', alignItems: 'center', justifyContent: 'center'}}>
       <Button
       title="Take picture"
-      onPress = {() => this.props.navigation.navigate('CameraScreen')}
+      // onPress = {() => this.props.navigation.navigate('CameraScreen')}
       />
       <Button
       title="Upload picture"
@@ -152,7 +138,7 @@ class Details extends React.Component{
     let { navigation } = this.props;
 
     return(
-      <ScrollView contentContainerStyle={styles.detailSheet}> 
+      <ScrollView contentContainerStyle={{alignItems:'center'}}> 
       <Text style = {{alignItems: 'center', justifyContent: 'center'}}>{this.state.data.title}</Text>
       <Image
       source = {{uri: this.state.data.image_url}}
@@ -178,9 +164,6 @@ class UploadPicture extends React.Component{
 const AppNavigator = createStackNavigator({
   Home: {
     screen: HomeScreen,
-  },
-  CameraScreen:{
-    screen: CameraScreen,
   },
   UploadPicture:{
     screen: UploadPicture,
