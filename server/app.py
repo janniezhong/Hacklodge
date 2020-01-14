@@ -1,5 +1,7 @@
 import json
 
+from google.py import *
+
 from flask import Flask
 app = Flask(__name__)
 
@@ -7,6 +9,10 @@ app = Flask(__name__)
 def hello():
     return "Hello World!"
 
+# things to return: ("scrambled eggs")
+# - (string) formatted name of dish ("Scrambled Eggs")
+# - (string) url to picture of dish
+# - (string) description of dish
 @app.route("/info/<name>")
 def info(name):
 	returnDict = {
@@ -17,7 +23,3 @@ def info(name):
 
 if __name__ == "__main__":
     app.run()
-
-
-API_KEY = 'AIzaSyC5XBcVJYQeAvln406kzMzTGJwFEwyZQ9I'
-CX = '006723745949135884597:oiqnkrgsrxi'
