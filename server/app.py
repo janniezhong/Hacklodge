@@ -1,8 +1,16 @@
-import json
+# import environment variables
 from environment import *
 
+# general imports
+import json
+
+# scrub imports
 from scrub import *
 
+# ocr imports
+from ocr import *
+
+# flask server
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
@@ -14,8 +22,12 @@ def hello():
 # - (string) formatted name of dish ("Scrambled Eggs")
 # - (string) url to picture of dish
 # - (string) description of dish
-@app.route("/info/<name>")
-def info(name):
+@app.route("/info", methods=['POST'])
+def info():
+	print str(request)
+	print "name is "+request.form.get('name')
+
+	name = request.form.get('name')
 	image_str = getImage(name)
 	desc_obj = getDescriptionAndTitle(name)
 
@@ -26,8 +38,23 @@ def info(name):
 	}
 	return json.dumps(returnDict)
 
-# for debugging
+@app.route("/ocr", methods=['POST'])
+def ocr():
+	menuid = request.form.get('menu_id')
+	print menuid
 
+	myUrl = './static/menu1.jpeg'
+	if menuid == '2':
+		myUrl = './static/menu2.jpeg'
+		print myUrl
+	elif menuid == '3':
+		myUrl = './static/menu3.jpeg'
+
+	returnDict = do_ocr(myUrl)
+	return json.dumps(returnDict)
+
+
+# for debugging
 @app.route("/posttest", methods=['POST'])
 def posttest():
     return json.dumps(request.form)

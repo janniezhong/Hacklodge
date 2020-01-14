@@ -1,6 +1,6 @@
 import requests
-import re
 from bs4 import BeautifulSoup
+import re
 
 GOOGLE_CX_STR = "017764573668867698617:wfsi6hryv8w"
 GOOGLE_API_KEY = "AIzaSyC5XBcVJYQeAvln406kzMzTGJwFEwyZQ9I"
@@ -46,6 +46,12 @@ def getDescriptionAndTitle(name):
 	response1 = requests.get('https://en.wikipedia.org/w/api.php', params = params1).json()
 
 	items = response1.get('query').get('search')
+
+	if(len(items) == 0):
+		return {
+			"description": "No description could be found for this item.",
+			"title": name
+		}
 
 	# link = items[0].get('link') # return this to the front-end
 	pageid = items[0].get('pageid')
