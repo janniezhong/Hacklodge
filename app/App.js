@@ -66,23 +66,26 @@ class PicturePreview extends React.Component {
     const { navigation } = this.props;
     var menuPath = this.chooseMenu(navigation.getParam('menuId'))
 // menuPath = require('./menus/wine-list.jpeg');
-return (
-  <View title = "Preview"
-  style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}> 
-  <Image style = {{
-    resizeMode: 'contain', height: 500, width: 400,
-  }}
-  source = {menuPath}
-  />
-  <Button 
-  title = "Next"
-  onPress={() => {
-    this.props.navigation.navigate('MenuList');
-  }}
-  />
-  </View>
-  )
-}
+  return (
+    <View title = "Preview"
+    style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}> 
+    <Image style = {{
+      resizeMode: 'contain', height: 500, width: 400,
+    }}
+    source = {menuPath}
+    />
+    <Button 
+    title = "Next"
+    onPress= {() => {
+      this.props.navigation.navigate('MenuList', {
+        menuType:'upload', 
+        menuId:this.props.navigation.getParam('menuId')}
+      );
+    }}
+    />
+    </View>
+    )
+  }
 
 }
 
@@ -92,13 +95,37 @@ class MenuList extends React.Component{
       title: 'Menu Items'
     };
   };
+  state = {
+    data: {item_list: ["Scrambled Eggs"]}
+  }
+  componentDidMount() {
+    if(this.props.navigation.getParam('menuType') == 'upload') {
+      let menuId = this.props.navigation.getParam('menuId');
+
+      let formData = new FormData();
+      formData.append('menu_id', menuId);
+      fetch(`${host}/ocr`, {
+        method:'POST',
+        body: formData
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Success:', data);
+        this.setState({data: data});
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+      // this.setState({names:["Huevos ocn Chariz", "Migas con Huev", "Beef Burrit", "Barbacoa Burrit", "Fiesta Chicken Burrito ", "Vegetarian Burrito ", "Smothered Burrito ", "Carne Asada Plate ", "Quesadilla ", "Carne Asada Steak "]});
+    }
+  }
 
   render(){
-    let names = ["Huevos ocn Chariz", "Migas con Huev", "Beef Burrit", "Barbacoa Burrit", "Fiesta Chicken Burrito ", "Vegetarian Burrito ", "Smothered Burrito ", "Carne Asada Plate ", "Quesadilla ", "Carne Asada Steak "]
+    
 
     return(
       <ScrollView>
-      {names.map(name => <ListItem key={name} navigation={this.props.navigation} menuItemName={name} />)}
+      {this.state.data.item_list.map(name => <ListItem key={name} navigation={this.props.navigation} menuItemName={name} />)}
       </ScrollView>
       );
   }
