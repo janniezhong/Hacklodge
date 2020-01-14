@@ -40,17 +40,12 @@ class HomeScreen extends React.Component{
       onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:3,})}
       />
       </View>
-      );
+    );
   }
 }
 
 class PicturePreview extends React.Component {
-
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: 'Preview'
-    };
-  };
+  static navigationOptions = ({ navigation }) => { title: 'Preview' };
 
   chooseMenu = (menuNum) => {
     if(menuNum == 1){
@@ -65,28 +60,22 @@ class PicturePreview extends React.Component {
   render(){
     const { navigation } = this.props;
     var menuPath = this.chooseMenu(navigation.getParam('menuId'))
-// menuPath = require('./menus/wine-list.jpeg');
-  return (
-    <View title = "Preview"
-    style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}> 
-    <Image style = {{
-      resizeMode: 'contain', height: 500, width: 400,
-    }}
-    source = {menuPath}
-    />
-    <Button 
-    title = "Next"
-    onPress= {() => {
-      this.props.navigation.navigate('MenuList', {
-        menuType:'upload', 
-        menuId:this.props.navigation.getParam('menuId')}
-      );
-    }}
-    />
-    </View>
-    )
+    // menuPath = require('./menus/wine-list.jpeg');
+    return (
+      <View title = "Preview" style = {{ flex:1, alignItems: 'center', justifyContent: 'center' }}> 
+      <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {menuPath} />
+      <Button 
+        title = "Next"
+        onPress= {() => {
+          this.props.navigation.navigate('MenuList', {
+            menuType:'upload', 
+            menuId:this.props.navigation.getParam('menuId')}
+          );
+        }}
+      />
+      </View>
+    );
   }
-
 }
 
 class MenuList extends React.Component{
@@ -96,7 +85,8 @@ class MenuList extends React.Component{
     };
   };
   state = {
-    data: {item_list: ["Scrambled Eggs"]}
+    // data: {item_list: ["Scrambled Eggs"]}
+    data: {item_list: ["Loading..."]}
   }
   componentDidMount() {
     if(this.props.navigation.getParam('menuType') == 'upload') {
@@ -121,13 +111,11 @@ class MenuList extends React.Component{
   }
 
   render(){
-    
-
     return(
       <ScrollView>
       {this.state.data.item_list.map(name => <ListItem key={name} navigation={this.props.navigation} menuItemName={name} />)}
       </ScrollView>
-      );
+    );
   }
 }
 
@@ -183,9 +171,8 @@ class UploadPicture extends React.Component{
       <View style = {{alignItems: 'center', justifyContent: 'center'}}>
       <Text>Upload Picture</Text>
       </View>
-      );
+    );
   }
-
 }
 
 const AppNavigator = createStackNavigator({
@@ -204,11 +191,9 @@ const AppNavigator = createStackNavigator({
   Details:{
     screen: Details,
   },
-},
-{
+},{
   initialRouteName: 'Home',
-}
-);
+});
 
 const AppContainer = createAppContainer(AppNavigator);
 
