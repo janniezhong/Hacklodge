@@ -18,6 +18,7 @@ import {
   MaterialCommunityIcons,
   Octicons
 } from '@expo/vector-icons';
+import { emitNotification } from 'expo/build/Notifications/Notifications';
 
 const images = {
   menuOne: require
@@ -396,7 +397,7 @@ class ChoosePictureScreen extends React.Component{
         <Text>Take or choose a picture</Text>
         <Button
           title="Take picture"
-          onPress = {() => this.props.navigation.navigate('TakePicture')}
+          onPress = {() => this.props.navigation.navigate('CameraScreen')}
         />
         <Button
           title="Upload picture"
@@ -451,8 +452,6 @@ class PicturePreview extends React.Component {
         </View>
       )
     }
-  
-
 
 }
 
@@ -462,27 +461,70 @@ class MenuList extends React.Component{
   render(){
     return(
       <ScrollView>
-        <Text>Various List Ingredients</Text>
+        <Button 
+          title = "Scrambled Eggs"
+          onPress={() => {
+            this.props.navigation.navigate('Details', {keyword: "Scrambled Eggs"})
+          }}
+        />
       </ScrollView>
     );
   }
 }
 
-class TakePicture extends React.Component{
-  render(){
-    return(
-      <View style = {{alignItems: 'center', justifyContent: 'center'}}>
-      </View>
-    );
+class Details extends React.Component{
+  
+  state = {
+    info: "",
   }
 
+  render(){
+    // const { navigation } = this.props;
+    // const host = 'http://57b9f852.ngrok.io'
+    // let formData = new FormData();
+    // formData.append('name', 'scrambled eggs');
+
+    // const request = new Request(`${host}/info`, {method: 'POST', body: formData});
+    // console.log(request);
+    // this.setState({info: request});
+
+    // const data = {"image_url": "https://images.media-allrecipes.com/userphotos/560x315/1010465.jpg", "description": "Scrambled eggs is a dish made from eggs (usually chicken eggs) stirred or beaten together in a pan while being gently heated, typically with salt, butter and sometimes other ingredients.", "title": "Scrambled Eggs"}
+    // console.log(data);
+    // console.log(request.description);
+    
+    
+    // fetch(request)
+    //   .then(response => {
+    //     console.log(response);
+    //     if (response.status === 200) {
+    //       return response;
+    //     } else {
+    //       throw new Error('Something went wrong on api server!');
+    //     }
+    //   })
+    //   .then(response => {
+    //     console.log(response);
+    //     // ...
+    //   }).catch(error => {
+    //     console.error(error);
+    //   });
+
+    return(
+      <ScrollView style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}> 
+        
+        <Text></Text>
+
+      </ScrollView>
+    )
+
+  }
 }
 
 class UploadPicture extends React.Component{
   render(){
     return(
       <View style = {{alignItems: 'center', justifyContent: 'center'}}>
-        <Text>Uploading Picture</Text>
+        <Text>Upload Picture</Text>
       </View>
     );
   }
@@ -493,7 +535,7 @@ const AppNavigator = createStackNavigator({
   Home: {
     screen: ChoosePictureScreen,
   },
-  TakePicture:{
+  CameraScreen:{
     screen: CameraScreen,
   },
   UploadPicture:{
@@ -504,6 +546,9 @@ const AppNavigator = createStackNavigator({
   },
   MenuList:{
     screen: MenuList,
+  },
+  Details:{
+    screen: Details,
   },
 },
  {
