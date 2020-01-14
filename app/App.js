@@ -7,6 +7,8 @@ import { Camera } from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 //import { width, height, totalSize } from 'react-native-dimension';
+import ListItem from './ListItem';
+
 
 import GalleryScreen from './GalleryScreen';
 import isIPhoneX from 'react-native-is-iphonex';
@@ -462,14 +464,11 @@ class PicturePreview extends React.Component {
 
 class MenuList extends React.Component{
   render(){
+    let names = ["first", "second", "burrito"]
+
     return(
       <ScrollView>
-        <Button 
-          title = "Scrambled Eggs"
-          onPress={() => {
-            this.props.navigation.navigate('Details', {keyword: "Scrambled Eggs"})
-          }}
-        />
+        {names.map(name => <ListItem key={name} navigation={this.props.navigation} menuItemName={name} />)}
       </ScrollView>
     );
   }
@@ -486,9 +485,11 @@ class Details extends React.Component{
     };
   };
 
+    
 
   render(){
-    const { navigation } = this.props;
+
+    let { navigation } = this.props;
     const host = 'http://57b9f852.ngrok.io'
     let formData = new FormData();
     formData.append('name', 'scrambled eggs');
@@ -498,12 +499,11 @@ class Details extends React.Component{
 
     const data = `{"image_url": "https://images.media-allrecipes.com/userphotos/560x315/1010465.jpg", "description": "Scrambled eggs is a dish made from eggs (usually chicken eggs) stirred or beaten together in a pan while being gently heated, typically with salt, butter and sometimes other ingredients.", "title": "Scrambled Eggs"}`
     let infoObject = JSON.parse(data)
-    descr = infoObject.description;
-    imageurl = infoObject.image_url;
-    name = infoObject.title;
+    let descr = infoObject.description;
+    let imageurl = infoObject.image_url;
+    let name = infoObject.title;
     console.log(data);
     console.log(request.description);
-    
     
     // fetch(request)
     //   .then(response => {
@@ -531,7 +531,7 @@ class Details extends React.Component{
         <Text  style = {{flex:1, alignItems: 'center', justifyContent: 'center'}} > {descr} </Text>
 
       </ScrollView>
-    )
+    );
 
   }
 }
