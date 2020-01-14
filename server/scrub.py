@@ -35,7 +35,7 @@ def clean_text(rgx_list, text):
     return new_text
 
 # first get a list of pages from wikipedia, then pick the top one and search that
-def getDescription(name):
+def getDescriptionAndTitle(name):
 	params1 = {
 		"action": "query",
 		"format":  "json",
@@ -60,13 +60,23 @@ def getDescription(name):
 	}
 
 	response2 = requests.get('https://en.wikipedia.org/w/api.php', params = params2).json()
+	parsed = response2.get('parse')
 
-	wikitext = response2.get('parse').get('text')
+	wikitext = parsed.get('text')
 	soup = BeautifulSoup(str(wikitext), 'html.parser')
 
 	# print(soup.prettify())
 	# print(soup.get_text())
 	paragraphs = soup.find_all('p')
 	rgx_list = ['\\\\n', '\[.+?\]']
-	return clean_text(rgx_list, paragraphs[0].get_text())
+	clean_str = clean_text(rgx_list, paragraphs[0].get_text())
+
+
+	parsed_name = parsed.get('title')
+	title = parsed_name.title()
+
+	return {
+		"description": clean_str,
+		"title": title
+	}
 

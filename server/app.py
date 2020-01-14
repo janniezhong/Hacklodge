@@ -1,6 +1,6 @@
 import json
 
-from google.py import *
+from scrub import *
 
 from flask import Flask
 app = Flask(__name__)
@@ -15,9 +15,13 @@ def hello():
 # - (string) description of dish
 @app.route("/info/<name>")
 def info(name):
+	image_str = getImage(name)
+	desc_obj = getDescriptionAndTitle(name)
+
 	returnDict = {
-		'name':name,
-		'calories':'500'
+		'title':desc_obj.get("title"),
+		'description':desc_obj.get("description"),
+		'image_url':image_str
 	}
 	return json.dumps(returnDict)
 
