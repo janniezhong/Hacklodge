@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Image, Button, StyleSheet, Text, View, Alert, TouchableOpacity, Slider, Platform } from 'react-native';
+import { ScrollView, Image, Button, StyleSheet, Text, View, Alert, TouchableOpacity, Slider, Platform } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import Constants from 'expo-constants';
 import { Camera } from 'expo-camera'; 
 import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
-import { width, height, totalSize } from 'react-native-dimension';
+//import { width, height, totalSize } from 'react-native-dimension';
 
 import GalleryScreen from './GalleryScreen';
 import isIPhoneX from 'react-native-is-iphonex';
@@ -18,6 +18,10 @@ import {
   MaterialCommunityIcons,
   Octicons
 } from '@expo/vector-icons';
+
+const images = {
+  menuOne: require
+}
 
 const landmarkSize = 2;
 
@@ -400,35 +404,68 @@ class ChoosePictureScreen extends React.Component{
         />
         <Button
           title="Sample Menu 1"
-          onPress = {() => this.props.navigation.navigate('PicturePreview', {id:1})}
+          onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:1,})}
         />
         <Button
           title="Sample Menu 2"
-          onPress = {() => this.props.navigation.navigate('PicturePreview', {id:2})}
+          onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:2,})}
         />
         <Button
           title="Sample Menu 3"
-          onPress = {() => this.props.navigation.navigate('PicturePreview', {id:3})}
+          onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:3,})}
         />
       </View>
     );
   }
 }
 
-class PicturePreview extends React.Component{
+class PicturePreview extends React.Component {
+  chooseMenu = (menuNum) => {
+    if(menuNum == 1){
+      return require('./menus/simple-mexican-menu.jpeg');
+    } else if (menuNum == 2){
+      return require('./menus/wine-list.jpeg');
+    } else {
+      return require('./menus/mexican_menu.jpeg');
+    }
+  }  
+
     render(){
+      const { navigation } = this.props;
+      var menuPath = this.chooseMenu(navigation.getParam('menuId'))
+      // menuPath = require('./menus/wine-list.jpeg');
       return (
         <View 
           style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}> 
           <Image style = {{
-            resizeMode: 'contain', height: 500, width: 500,
+            resizeMode: 'contain', height: 500, width: 400,
           }}
-          source = {require('./menus/simple-mexican-menu.jpeg')}/>
+            source = {menuPath}
+          />
+          <Button 
+            title = "Next"
+            onPress={() => {
+              this.props.navigation.navigate('MenuList');
+            }}
+          />
         </View>
       )
     }
-    
+  
 
+
+}
+
+
+
+class MenuList extends React.Component{
+  render(){
+    return(
+      <ScrollView>
+        <Text>Various List Ingredients</Text>
+      </ScrollView>
+    );
+  }
 }
 
 class TakePicture extends React.Component{
@@ -464,6 +501,9 @@ const AppNavigator = createStackNavigator({
   },
   PicturePreview:{
     screen: PicturePreview,
+  },
+  MenuList:{
+    screen: MenuList,
   },
 },
  {
