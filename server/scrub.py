@@ -47,6 +47,12 @@ def getDescriptionAndTitle(name):
 
 	items = response1.get('query').get('search')
 
+	if(len(items) == 0):
+		return {
+			"description": "No description could be found for this item.",
+			"title": name
+		}
+
 	# link = items[0].get('link') # return this to the front-end
 	pageid = items[0].get('pageid')
 	print("pageid is "+str(pageid))

@@ -88,7 +88,7 @@ def do_ocr(url):
 
 	wordList = map(lambda item: clean_text(regex_list, item), wordList)
 
-	# TODO remove this dumb fix for trailing spaces and trailing element
+	# TODO remove this dumb fix for trailing spaces and trailing element (and reverse)
 	# [u'Carne Asada Steak ', u'Quesadilla ', u'Carne Asada Plate ', u'Smothered Burrito ', u'Vegetarian Burrito ', u'Fiesta Chicken Burrito ', u'Barbacoa Burrit', u'Beef Burrit', u'Migas con Huev', u'Huevos ocn Chariz', '']
 
 	del wordList[-1]
@@ -96,6 +96,8 @@ def do_ocr(url):
 	for i in range(len(wordList)):
 		while wordList[i][-1] == ' ':
 			wordList[i] = wordList[i][:-1]
+
+	wordList.reverse()
 
 	returnDict = {
 		"item_list": wordList
