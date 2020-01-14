@@ -3,7 +3,7 @@ from environment import *
 
 from scrub import *
 
-from flask import Flask
+from flask import Flask, render_template, request
 app = Flask(__name__)
 
 @app.route("/")
@@ -26,7 +26,16 @@ def info(name):
 	}
 	return json.dumps(returnDict)
 
-# @app.route("/ocr/")
+# for debugging
+
+@app.route("/posttest", methods=['POST'])
+def posttest():
+    return json.dumps(request.form)
+
+@app.route("/requester")
+def requester():
+	return render_template('requester.html')
+
 
 if __name__ == "__main__":
     app.run()
