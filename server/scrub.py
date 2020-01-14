@@ -2,7 +2,7 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
-GOOGLE_CX_STR = "006723745949135884597:oiqnkrgsrxi"
+GOOGLE_CX_STR = "017764573668867698617:wfsi6hryv8w"
 GOOGLE_API_KEY = "AIzaSyC5XBcVJYQeAvln406kzMzTGJwFEwyZQ9I"
 
 # get the first result from Google images
