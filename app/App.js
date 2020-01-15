@@ -14,57 +14,57 @@ const host = 'http://57b9f852.ngrok.io'
 const images = {
   menuOne: require
 }
-
+const myRed = '#FF6E66';
 const styles = StyleSheet.create({
-  menuButton: {
+  genericView: {flex: 1, alignItems: 'center', justifyContent: 'center'},
+  button: {
     alignItems:'center',
-    backgroundColor: '#FF6E66',
+    backgroundColor: myRed,
     width:'100%',
     padding:20,
     maxWidth:400,
     justifyContent:'space-between',
     marginTop:10
   },
-  menuButtonWrapper: {
+  buttonWrapper: {
     alignItems:'center',
     width:'100%',
     marginBottom:80,
     paddingLeft:10,
     paddingRight:10,
   },
-  menuButtonText: {
+  buttonText: {
     color: '#FFFFFF',
     fontSize:18
   },
-  menuLogo: {
+  logo: {
     resizeMode:'contain',
     width:290,
   },
 });
 
 class HomeScreen extends React.Component{
-
   render(){
     return (
-      <View style = {{flex: '1', alignItems: 'center', justifyContent: 'center'}}>
+      <View style = {styles.genericView}>
 
-        <Image style={styles.menuLogo} source={require('./assets/logo.png')} />
+        <Image style={styles.logo} source={require('./assets/logo.png')} />
 
-        <View style = {styles.menuButtonWrapper}>
-          <TouchableOpacity style={styles.menuButton}
+        <View style = {styles.buttonWrapper}>
+          <TouchableOpacity style={styles.button}
             // onPress = {() => this.props.navigation.navigate('CameraScreen')}
           >
-            <Text style={styles.menuButtonText}>Take Picture</Text>
+            <Text style={styles.buttonText}>Take Picture</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuButton}
+          <TouchableOpacity style={styles.button}
             onPress = {() => this.props.navigation.navigate('UploadPicture')}
           >
-            <Text style={styles.menuButtonText}>Upload Picture</Text>
+            <Text style={styles.buttonText}>Upload Picture</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuButton}
+          <TouchableOpacity style={styles.button}
             onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:1,})}
           >
-            <Text style={styles.menuButtonText}>See an Example</Text>
+            <Text style={styles.buttonText}>See an Example</Text>
           </TouchableOpacity>
         </View>
 
@@ -80,6 +80,16 @@ class HomeScreen extends React.Component{
     );
   }
 }
+
+const previewStyles = StyleSheet.create({
+  buttonWrapper: {
+    alignItems:'center',
+    width:'100%',
+    marginBottom:-30,
+    paddingLeft:10,
+    paddingRight:10,
+  },
+})
 
 class PicturePreview extends React.Component {
   static navigationOptions = ({ navigation }) => { title: 'Preview' };
@@ -99,21 +109,33 @@ class PicturePreview extends React.Component {
     var menuPath = this.chooseMenu(navigation.getParam('menuId'))
     // menuPath = require('./menus/wine-list.jpeg');
     return (
-      <View title = "Preview" style = {{ flex:1, alignItems: 'center', justifyContent: 'center' }}> 
+      <View title = "Preview" style = {styles.genericView}> 
       <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {menuPath} />
-      <Button 
-        title = "Next"
-        onPress= {() => {
-          this.props.navigation.navigate('MenuList', {
-            menuType:'upload', 
-            menuId:this.props.navigation.getParam('menuId')}
-          );
-        }}
-      />
+      <View style={styles.buttonWrapper, previewStyles.buttonWrapper}>
+        <TouchableOpacity style={styles.button}
+          onPress= {() => {
+            this.props.navigation.navigate('MenuList', {
+              menuType:'upload', 
+              menuId:this.props.navigation.getParam('menuId')}
+            );
+          }}
+        >
+          <Text style={styles.buttonText}>Next</Text>
+        </TouchableOpacity>
+        </View>
       </View>
     );
   }
 }
+
+const listStyles = StyleSheet.create({
+  oddItem: {
+    backgroundColor:'#FFC8BE'
+  },
+  evenItem: {
+
+  }
+})
 
 class MenuList extends React.Component{
   static navigationOptions = ({ navigation }) => {
@@ -150,7 +172,9 @@ class MenuList extends React.Component{
   render(){
     return(
       <ScrollView>
-      {this.state.data.item_list.map(name => <ListItem key={name} navigation={this.props.navigation} menuItemName={name} />)}
+      {this.state.data.item_list.map((name, i) => 
+        (<ListItem key={name} navigation={this.props.navigation} menuItemName={name} style={listStyles.oddItem} />)
+      )}
       </ScrollView>
     );
   }
@@ -234,13 +258,29 @@ const AppNavigator = createStackNavigator({
   MenuList:{
     screen: MenuList,
     navigationOptions: {
-      headerShown:false,
+      headerStyle: {
+        backgroundColor:myRed,
+        // headerTintColor:'#FFFFFF',
+      },
+      headerTitleStyle: {
+        fontWeight:'normal',
+        color:'#FFFFFF'
+      }
+      // headerShown:false,
     }
   },
   Details:{
     screen: Details,
     navigationOptions: {
-      headerShown:false,
+      headerStyle: {
+        backgroundColor:myRed,
+        // headerTintColor:'#FFFFFF',
+      },
+      headerTitleStyle: {
+        fontWeight:'normal',
+        color:'#FFFFFF'
+      }
+      // headerShown:false,
     }
   },
 },{
