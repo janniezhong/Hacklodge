@@ -15,30 +15,67 @@ const images = {
   menuOne: require
 }
 
+const styles = StyleSheet.create({
+  menuButton: {
+    alignItems:'center',
+    backgroundColor: '#FF6E66',
+    width:'100%',
+    padding:20,
+    maxWidth:400,
+    justifyContent:'space-between',
+    marginTop:10
+  },
+  menuButtonWrapper: {
+    alignItems:'center',
+    width:'100%',
+    marginBottom:80,
+    paddingLeft:10,
+    paddingRight:10,
+  },
+  menuButtonText: {
+    color: '#FFFFFF',
+    fontSize:18
+  },
+  menuLogo: {
+    resizeMode:'contain',
+    width:290,
+  },
+});
+
 class HomeScreen extends React.Component{
+
   render(){
     return (
       <View style = {{flex: '1', alignItems: 'center', justifyContent: 'center'}}>
-      <Button
-      title="Take picture"
-      // onPress = {() => this.props.navigation.navigate('CameraScreen')}
-      />
-      <Button
-      title="Upload picture"
-      onPress = {() => this.props.navigation.navigate('UploadPicture')}
-      />
-      <Button
-      title="Sample Menu 1"
-      onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:1,})}
-      />
-      <Button
-      title="Sample Menu 2"
-      onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:2,})}
-      />
-      <Button
-      title="Sample Menu 3"
-      onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:3,})}
-      />
+
+        <Image style={styles.menuLogo} source={require('./assets/logo.png')} />
+
+        <View style = {styles.menuButtonWrapper}>
+          <TouchableOpacity style={styles.menuButton}
+            // onPress = {() => this.props.navigation.navigate('CameraScreen')}
+          >
+            <Text style={styles.menuButtonText}>Take Picture</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuButton}
+            onPress = {() => this.props.navigation.navigate('UploadPicture')}
+          >
+            <Text style={styles.menuButtonText}>Upload Picture</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuButton}
+            onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:1,})}
+          >
+            <Text style={styles.menuButtonText}>See an Example</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* <Button
+        title="Sample Menu 2"
+        onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:2,})}
+        />
+        <Button
+        title="Sample Menu 3"
+        onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:3,})}
+        /> */}
       </View>
     );
   }
@@ -178,18 +215,33 @@ class UploadPicture extends React.Component{
 const AppNavigator = createStackNavigator({
   Home: {
     screen: HomeScreen,
+    navigationOptions: {
+      headerShown:false,
+    }
   },
   UploadPicture:{
     screen: UploadPicture,
+    navigationOptions: {
+      headerShown:false,
+    }
   },
   PicturePreview:{
     screen: PicturePreview,
+    navigationOptions: {
+      headerShown:false,
+    }
   },
   MenuList:{
     screen: MenuList,
+    navigationOptions: {
+      headerShown:false,
+    }
   },
   Details:{
     screen: Details,
+    navigationOptions: {
+      headerShown:false,
+    }
   },
 },{
   initialRouteName: 'Home',
