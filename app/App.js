@@ -62,7 +62,7 @@ class HomeScreen extends React.Component{
             <Text style={styles.buttonText}>Upload Picture</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button}
-            onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:1,})}
+            onPress = {() => this.props.navigation.navigate('Preview', {menuId:1,})}
           >
             <Text style={styles.buttonText}>See an Example</Text>
           </TouchableOpacity>
@@ -70,11 +70,11 @@ class HomeScreen extends React.Component{
 
         {/* <Button
         title="Sample Menu 2"
-        onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:2,})}
+        onPress = {() => this.props.navigation.navigate('Preview', {menuId:2,})}
         />
         <Button
         title="Sample Menu 3"
-        onPress = {() => this.props.navigation.navigate('PicturePreview', {menuId:3,})}
+        onPress = {() => this.props.navigation.navigate('Preview', {menuId:3,})}
         /> */}
       </View>
     );
@@ -91,7 +91,7 @@ const previewStyles = StyleSheet.create({
   },
 })
 
-class PicturePreview extends React.Component {
+class Preview extends React.Component {
   static navigationOptions = ({ navigation }) => { title: 'Preview' };
 
   chooseMenu = (menuNum) => {
@@ -128,14 +128,6 @@ class PicturePreview extends React.Component {
   }
 }
 
-const listStyles = StyleSheet.create({
-  oddItem: {
-    backgroundColor:'#FFC8BE'
-  },
-  evenItem: {
-
-  }
-})
 
 class MenuList extends React.Component{
   static navigationOptions = ({ navigation }) => {
@@ -173,7 +165,7 @@ class MenuList extends React.Component{
     return(
       <ScrollView>
       {this.state.data.item_list.map((name, i) => 
-        (<ListItem key={name} navigation={this.props.navigation} menuItemName={name} style={listStyles.oddItem} />)
+        (<ListItem key={name} navigation={this.props.navigation} menuItemName={name} listParity={i%2} />)
       )}
       </ScrollView>
     );
@@ -249,8 +241,8 @@ const AppNavigator = createStackNavigator({
       headerShown:false,
     }
   },
-  PicturePreview:{
-    screen: PicturePreview,
+  Preview:{
+    screen: Preview,
     navigationOptions: {
       headerShown:false,
     }

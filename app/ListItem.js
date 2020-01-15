@@ -10,8 +10,10 @@ export default class ListItem extends React.Component {
     selected: [],
   };
   render() {
+
+
     return (
-      <View style={styles.container}>
+      <View style={this.props.listParity == 1 ? listStyles.oddItem : listStyles.evenItem}>
         <Button 
           title={this.props.menuItemName}
           onPress={() => {
@@ -23,30 +25,11 @@ export default class ListItem extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20,
-    paddingBottom: 20,
-    backgroundColor: 'white',
-  },
-  navbar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#4630EB',
-  },
-  pictures: {
-    flex: 1,
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 8,
-  },
-  button: {
-    padding: 20,
-  },
-  whiteText: {
-    color: 'white',
-  }
+const listStyles = StyleSheet.create({
+    oddItem: {
+      backgroundColor:'#FFC8BE'
+    },
+    evenItem: {
+      backgroundColor: '#FFE6E6'
+    }
 });
