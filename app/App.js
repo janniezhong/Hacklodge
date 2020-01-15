@@ -175,7 +175,7 @@ class MenuList extends React.Component{
 class Details extends React.Component{
 
   state = {
-    data: { image_url: '', image_url: '', description:'' },
+    data: { image_url: `${host}/static/loading.png`, description:'Loading description...' },
   }
   static navigationOptions = ({ navigation }) => {
     return {
