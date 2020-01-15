@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   detailSheet: {
     alignItems: 'center',
   }
-});s
+});
 
 
 class CameraScreen extends React.Component {
