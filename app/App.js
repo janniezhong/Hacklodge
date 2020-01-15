@@ -175,11 +175,11 @@ class MenuList extends React.Component{
 class Details extends React.Component{
 
   state = {
-    data: { image_url: '', image_url: '', description:'' },
+    data: { image_url: `${host}/static/loading.png`, description:'Loading description...' },
   }
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.getParam('keyword')
+      title: navigation.getParam('menuItemName')
     };
   };
 
@@ -207,12 +207,19 @@ class Details extends React.Component{
 
     return(
       <ScrollView contentContainerStyle={{alignItems:'center'}}> 
-      <Text style = {{alignItems: 'center', justifyContent: 'center'}}>{this.state.data.title}</Text>
+      {/* <Text style = {{alignItems: 'center', justifyContent: 'center'}}>{this.state.data.title}</Text> */}
       <Image
       source = {{uri: this.state.data.image_url}}
-      style = {{resizeMode: 'contain', width: 150, height: 150, alignItems: 'center',}}
+      style = {{resizeMode: 'contain', width: 250, height: 200, alignItems: 'center',}}
       />
-      <Text style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}>{this.state.data.description}</Text>
+      <Text style = {{
+        flex:1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 18,
+        padding:20,
+        lineHeight:27,
+      }}>{this.state.data.description}</Text>
       </ScrollView>
       );
   }

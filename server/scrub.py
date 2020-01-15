@@ -75,11 +75,17 @@ def getDescriptionAndTitle(name):
 	# print(soup.get_text())
 	paragraphs = soup.find_all('p')
 	rgx_list = ['\\\\n', '\[.+?\]']
-	clean_str = clean_text(rgx_list, paragraphs[0].get_text())
+	clean_str = clean_text(rgx_list, paragraphs[0].get_text()+"\n"+paragraphs[1].get_text()+"\n"+paragraphs[2].get_text())
 
 
 	parsed_name = parsed.get('title')
 	title = parsed_name.title()
+
+	if(len(clean_str) < 10):
+		return {
+			"description": "No description could be found for this item.",
+			"title": name
+		}
 
 	return {
 		"description": clean_str,

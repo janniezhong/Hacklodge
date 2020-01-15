@@ -24,9 +24,6 @@ def hello():
 # - (string) description of dish
 @app.route("/info", methods=['POST'])
 def info():
-	print str(request)
-	print "name is "+request.form.get('name')
-
 	name = request.form.get('name')
 	image_str = getImage(name)
 	desc_obj = getDescriptionAndTitle(name)
@@ -41,7 +38,6 @@ def info():
 @app.route("/ocr", methods=['POST'])
 def ocr():
 	menuid = request.form.get('menu_id')
-	print menuid
 
 	myUrl = './static/menu1.jpeg'
 	if menuid == '2':

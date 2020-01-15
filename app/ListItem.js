@@ -27,9 +27,13 @@ export default class ListItem extends React.Component {
 
 const listStyles = StyleSheet.create({
     oddItem: {
-      backgroundColor:'#FFC8BE'
+      backgroundColor:'#FFC8BE',
+      paddingTop:20,
+      paddingBottom:20,
     },
     evenItem: {
-      backgroundColor: '#FFE6E6'
+      backgroundColor: '#FFE6E6',
+      paddingTop:20,
+      paddingBottom:20,
     }
 });
