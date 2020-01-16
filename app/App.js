@@ -531,9 +531,6 @@ class Preview extends React.Component {
               imgType: navigation.getParam('imgType'), 
               imgURI: menuPath}
             );
-            // console.log("I pressed the next button!");
-            // {renderBox}
-            // console.log("I pressed the next button!");
           }}
         >
           <Text style={styles.buttonText}>Next</Text>
@@ -548,20 +545,33 @@ class Preview extends React.Component {
 
 class BoxScreen extends React.Component {
 
-  static navigationOptions = ({ navigation }) => { title: 'BoxScreen' };
- 
+  static navigationOptions = ({ navigation }) => { title: 'BoxScreen' };1
+
+  componentDidMount() {
+    let formData = new FormData();
+    var photo = {
+      uri: this.props.navigation.getParam('imgURI'),
+      type: 'image/jpeg',
+      name: 'photo.jpg',
+   };
+    formData.append('photo', photo);
+
+    fetch(`${host}/info`, {
+      method:'POST',
+      body: formData
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Success:', data);
+      this.setState({data: data});
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
 
   render(){
     const { navigation } = this.props;
-    // var imgType = navigation.getParam('imgType');
-    // var menuPath = "";
-    // if (imgType == 'taken'){
-    //   menuPath = navigation.getParam('imgURI');
-    // } else {
-    //   menuPath = 'https://marketplace.canva.com/EADaoJv_rFk/1/0/618w/canva-red-brown-simple-mexican-menu-6nt2YAg2IKI.jpg';
-    // }
-
-    // menuPath = require('./menus/wine-list.jpeg');
     return (
       <View title = "Preview" style = {styles.genericView}> 
       <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {{uri:navigation.getParam('imgURI')}} />
