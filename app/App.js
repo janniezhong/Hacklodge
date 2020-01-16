@@ -8,6 +8,8 @@ import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 //import { width, height, totalSize } from 'react-native-dimension';
 import ListItem from './ListItem';
+import BoxScreen from './BoxScreen';
+
 
 
 import GalleryScreen from './GalleryScreen';
@@ -487,6 +489,11 @@ const previewStyles = StyleSheet.create({
 })
 
 class Preview extends React.Component {
+
+  renderBoxScreen() {
+    console.log("Made it to BoxScreen rendering!")
+    return <BoxScreen navigation={this.props.navigation} menuId = {this.props.navigation.getParam('menuId')} menuType='example' />;
+  }
   static navigationOptions = ({ navigation }) => { title: 'Preview' };
 
   chooseMenu = (menuNum) => {
@@ -502,12 +509,14 @@ class Preview extends React.Component {
   render(){
     const { navigation } = this.props;
     var imgType = navigation.getParam('imgType');
+    var menuPath = "";
     if (imgType == 'taken'){
-      var menuPath = navigation.getParam('imgURI');
+      menuPath = navigation.getParam('imgURI');
     } else {
-      var menuPath = this.chooseMenu(navigation.getParam('menuId'));
+      menuPath = this.chooseMenu(navigation.getParam('menuId'));
     }
 
+    const renderBox = this.renderBoxScreen();
     //console.log(menuPath);
     // menuPath = require('./menus/wine-list.jpeg');
     return (
@@ -516,10 +525,15 @@ class Preview extends React.Component {
       <View style={styles.buttonWrapper, previewStyles.buttonWrapper}>
         <TouchableOpacity style={styles.button}
           onPress= {() => {
-            this.props.navigation.navigate('MenuList', {
-              menuType:'example', 
-              menuId:this.props.navigation.getParam('menuId')}
-            );
+            // this.props.navigation.navigate('BoxScreen', {
+            //   navigation:this.props.navigation,
+            //   menuType:'example', 
+            //   menuId: this.props.navigation.getParam('menuId'),
+            //   menuURI: menuPath}
+            // );
+            console.log("I pressed the next button!");
+            {renderBox}
+            console.log("I pressed the next button!");
           }}
         >
           <Text style={styles.buttonText}>Next</Text>
@@ -655,6 +669,12 @@ const AppNavigator = createStackNavigator({
       headerShown:false,
     }
   },
+  // BoxScreen:{
+  //   screen: BoxScreen,
+  //   navigationOptions: {
+  //     headerShown:false,
+  //   }
+  // },
   MenuList:{
     screen: MenuList,
     navigationOptions: {
