@@ -35,21 +35,38 @@ export default class GalleryScreen extends React.Component {
   saveToGallery = async () => {
     const photos = this.state.selected;
 
-    if (photos.length > 0) {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (photos.length == 1) {
+      // const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
-      if (status !== 'granted') {
-        throw new Error('Denied CAMERA_ROLL permissions!');
-      }
+      // if (status !== 'granted') {
+      //   throw new Error('Denied CAMERA_ROLL permissions!');
+      // }
 
       const promises = photos.map(photoUri => {
         return MediaLibrary.createAssetAsync(photoUri);
       });
+      try {
+      const results = await Promise.all(promises)
+      console.log("print promises");
+      console.log(results);
 
-      await Promise.all(promises);
-      alert('Successfully saved photos to user\'s gallery!');
-    } else {
+      let localURI = results[0].uri;
+
+      console.log("print localURI");
+      console.log(localURI);
+      console.log(this.props.navigation)
+      
+
+      this.props.navigation.navigate('Preview', {imgType: 'taken', imgURI: localURI,})
+      } catch(err){
+        console.log(err);
+      }
+
+      //alert('Successfully saved photos to user\'s gallery!');
+    } else if (photos.length == 0) {
       alert('No photos to save!');
+    } else {
+      alert('Please only choose one picture!')
     }
   };
 
@@ -68,7 +85,7 @@ export default class GalleryScreen extends React.Component {
             <MaterialIcons name="arrow-back" size={25} color="white" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={this.saveToGallery}>
-            <Text style={styles.whiteText}>Save selected to gallery</Text>
+            <Text style={styles.whiteText}>Preview Selected</Text>
           </TouchableOpacity>
         </View>
         <ScrollView contentComponentStyle={{ flex: 1 }}>

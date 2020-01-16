@@ -264,11 +264,25 @@ class CameraScreen extends React.Component {
   zoomIn = () => this.setState({ zoom: this.state.zoom + 0.1 > 1 ? 1 : this.state.zoom + 0.1 });
 
   setFocusDepth = depth => this.setState({ depth });
-
-  takePicture = () => {
+ 
+  takePicture = async () => {
     if (this.camera) {
-      var imageObj = this.camera.takePictureAsync({ onPictureSaved: this.onPictureSaved });
+      let imagePromise =  await this.camera.takePictureAsync();
       
+      console.log("printing imagePromise:");
+      console.log(imagePromise);
+
+      // {onPictureSaved: this.onPictureSaved}
+      // imagePromise.then((obj) => {
+      //   console.log("printing obj:");
+      //   console.log(obj);
+      //   //this.setState({data: data});
+      // })
+      
+      let localURI = imagePromise.uri;
+      console.log("printing localURI:");
+      console.log(localURI);
+      this.props.navigation.navigate('Preview', {imgType: 'taken', imgURI: localURI,});
     }
   };
 
@@ -320,7 +334,7 @@ class CameraScreen extends React.Component {
   }
 
   renderGallery() {
-    return <GalleryScreen onPress={this.toggleView.bind(this)} />;
+    return <GalleryScreen navigation={this.props.navigation} onPress={this.toggleView.bind(this)} />;
   }
 
   renderNoPermissions = () => 
@@ -487,11 +501,18 @@ class Preview extends React.Component {
 
   render(){
     const { navigation } = this.props;
-    var menuPath = this.chooseMenu(navigation.getParam('menuId'))
+    var imgType = navigation.getParam('imgType');
+    if (imgType == 'taken'){
+      var menuPath = navigation.getParam('imgURI');
+    } else {
+      var menuPath = this.chooseMenu(navigation.getParam('menuId'));
+    }
+
+    //console.log(menuPath);
     // menuPath = require('./menus/wine-list.jpeg');
     return (
       <View title = "Preview" style = {styles.genericView}> 
-      <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {menuPath} />
+      <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {{uri: menuPath}} />
       <View style={styles.buttonWrapper, previewStyles.buttonWrapper}>
         <TouchableOpacity style={styles.button}
           onPress= {() => {
