@@ -8,7 +8,6 @@ import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 //import { width, height, totalSize } from 'react-native-dimension';
 import ListItem from './ListItem';
-import BoxScreen from './BoxScreen';
 
 
 
@@ -23,6 +22,8 @@ import {
   Octicons
 } from '@expo/vector-icons';
 import { emitNotification } from 'expo/build/Notifications/Notifications';
+
+//constants
 
 const host = 'http://57b9f852.ngrok.io'
 
@@ -68,6 +69,7 @@ const wbIcons = {
 };
 
 
+//Style Sheet
 
 const myRed = '#FF6E66';
 const styles = StyleSheet.create({
@@ -209,6 +211,7 @@ const styles = StyleSheet.create({
   }
 });
 
+//Camera Screen
 
 class CameraScreen extends React.Component {
   state = {
@@ -439,6 +442,7 @@ class CameraScreen extends React.Component {
   }
 }
 
+//Home Screen
 
 class HomeScreen extends React.Component{
   render(){
@@ -449,7 +453,7 @@ class HomeScreen extends React.Component{
 
         <View style = {styles.buttonWrapper}>
           <TouchableOpacity style={styles.button}
-            onPress = {() => this.props.navigation.navigate('CameraScreen')}
+            onPress = {() => this.props.navigation.navigate('CameraScreen', {imgType: 'taken',})}
           >
             <Text style={styles.buttonText}>Take Picture</Text>
           </TouchableOpacity>
@@ -459,7 +463,7 @@ class HomeScreen extends React.Component{
             <Text style={styles.buttonText}>Upload Picture</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button}
-            onPress = {() => this.props.navigation.navigate('Preview', {menuId:1,})}
+            onPress = {() => this.props.navigation.navigate('Preview', {imgType:'example',})}
           >
             <Text style={styles.buttonText}>See an Example</Text>
           </TouchableOpacity>
@@ -488,23 +492,15 @@ const previewStyles = StyleSheet.create({
   },
 })
 
+//Preview Screen
+
 class Preview extends React.Component {
 
-  renderBoxScreen() {
-    console.log("Made it to BoxScreen rendering!")
-    return <BoxScreen navigation={this.props.navigation} menuId = {this.props.navigation.getParam('menuId')} menuType='example' />;
-  }
-  static navigationOptions = ({ navigation }) => { title: 'Preview' };
-
-  chooseMenu = (menuNum) => {
-    if(menuNum == 1){
-      return require('./menus/simple-mexican-menu.jpeg');
-    } else if (menuNum == 2){
-      return require('./menus/wine-list.jpeg');
-    } else {
-      return require('./menus/mexican_menu.jpeg');
-    }
-  }  
+  // renderBoxScreen() {
+  //   console.log("Made it to BoxScreen rendering!")
+  //   return <BoxScreen navigation={this.props.navigation} menuId = {this.props.navigation.getParam('menuId')} menuType='example' />;
+  // }
+  static navigationOptions = ({ navigation }) => { title: 'Preview' }; 
 
   render(){
     const { navigation } = this.props;
@@ -512,28 +508,33 @@ class Preview extends React.Component {
     var menuPath = "";
     if (imgType == 'taken'){
       menuPath = navigation.getParam('imgURI');
-    } else {
-      menuPath = this.chooseMenu(navigation.getParam('menuId'));
-    }
+    } else if (imgType == 'example'){
+      console.log("this should display if you pressed the example")
+      menuPath = 'https://marketplace.canva.com/EADaoJv_rFk/1/0/618w/canva-red-brown-simple-mexican-menu-6nt2YAg2IKI.jpg';
+      console.log(menuPath);
 
-    const renderBox = this.renderBoxScreen();
+    } else {
+      console.log("You made a mistake :(");
+    }
+    console.log(menuPath);
+
+    //const renderBox = this.renderBoxScreen();
     //console.log(menuPath);
     // menuPath = require('./menus/wine-list.jpeg');
     return (
       <View title = "Preview" style = {styles.genericView}> 
-      <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {{uri: menuPath}} />
+      <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {{uri:menuPath}} />
       <View style={styles.buttonWrapper, previewStyles.buttonWrapper}>
         <TouchableOpacity style={styles.button}
           onPress= {() => {
-            // this.props.navigation.navigate('BoxScreen', {
-            //   navigation:this.props.navigation,
-            //   menuType:'example', 
-            //   menuId: this.props.navigation.getParam('menuId'),
-            //   menuURI: menuPath}
-            // );
-            console.log("I pressed the next button!");
-            {renderBox}
-            console.log("I pressed the next button!");
+            this.props.navigation.navigate('BoxScreen', {
+              navigation:this.props.navigation,
+              imgType: navigation.getParam('imgType'), 
+              imgURI: menuPath}
+            );
+            // console.log("I pressed the next button!");
+            // {renderBox}
+            // console.log("I pressed the next button!");
           }}
         >
           <Text style={styles.buttonText}>Next</Text>
@@ -544,6 +545,47 @@ class Preview extends React.Component {
   }
 }
 
+//Box Screen
+
+class BoxScreen extends React.Component {
+
+  static navigationOptions = ({ navigation }) => { title: 'BoxScreen' };
+ 
+
+  render(){
+    const { navigation } = this.props;
+    // var imgType = navigation.getParam('imgType');
+    // var menuPath = "";
+    // if (imgType == 'taken'){
+    //   menuPath = navigation.getParam('imgURI');
+    // } else {
+    //   menuPath = 'https://marketplace.canva.com/EADaoJv_rFk/1/0/618w/canva-red-brown-simple-mexican-menu-6nt2YAg2IKI.jpg';
+    // }
+
+    // menuPath = require('./menus/wine-list.jpeg');
+    return (
+      <View title = "Preview" style = {styles.genericView}> 
+      <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {{uri:navigation.getParam('imgURI')}} />
+      <View style={styles.buttonWrapper, previewStyles.buttonWrapper}>
+        <TouchableOpacity style={styles.button}
+          onPress= {() => {
+            this.props.navigation.navigate('MenuList', {
+              navigation:this.props.navigation,
+              imgType:'example', 
+              imgURI: navigation.getParam('menuURI')}
+            );
+          }}
+        >
+          <Text style={styles.buttonText}>Next</Text>
+        </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+}
+
+
+//MenuList Preview
 
 class MenuList extends React.Component{
   static navigationOptions = ({ navigation }) => {
@@ -587,6 +629,8 @@ class MenuList extends React.Component{
     );
   }
 }
+
+//Details Screen
 
 class Details extends React.Component{
 
@@ -669,12 +713,12 @@ const AppNavigator = createStackNavigator({
       headerShown:false,
     }
   },
-  // BoxScreen:{
-  //   screen: BoxScreen,
-  //   navigationOptions: {
-  //     headerShown:false,
-  //   }
-  // },
+  BoxScreen:{
+    screen: BoxScreen,
+    navigationOptions: {
+      headerShown:false,
+    }
+  },
   MenuList:{
     screen: MenuList,
     navigationOptions: {

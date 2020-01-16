@@ -45,20 +45,21 @@ export default class GalleryScreen extends React.Component {
       const promises = photos.map(photoUri => {
         return MediaLibrary.createAssetAsync(photoUri);
       });
-      try {
-      const results = await Promise.all(promises)
-      console.log("print promises");
-      console.log(results);
+        try {
+          const results = await Promise.all(promises)
+          console.log("print promises");
+          console.log(results);
 
-      let localURI = results[0].uri;
+          let localURI = results[0].uri;
 
-      console.log("print localURI");
-      console.log(localURI);
-      console.log(this.props.navigation)
+          console.log("print localURI");
+          console.log(localURI);
+
+
       
 
-      this.props.navigation.navigate('Preview', {imgType: 'taken', imgURI: localURI,})
-      } catch(err){
+          this.props.navigation.navigate('Preview', {imgType: 'taken', imgURI: localURI,})
+        } catch(err){
         console.log(err);
       }
 
