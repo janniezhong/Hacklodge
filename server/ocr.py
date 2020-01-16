@@ -17,9 +17,6 @@ def do_ocr(url):
 	teststr_1 = url
 	box_data = pytesseract.image_to_boxes(Image.open(teststr_1), output_type=pytesseract.Output.DICT)
 
-	# print box_data.keys()
-	# [u'right', u'bottom', u'top', u'char', u'page', u'left']
-
 	numChars = len(box_data.get('right'))
 
 	# convert dict of lists to list of dicts
@@ -36,6 +33,7 @@ def do_ocr(url):
 
 	sortByTop = sorted(charList, key=lambda item: item.get('top'))
 
+	# this is a two-dimensional array
 	unsortedWords = [[]]
 
 	for i in range(numChars-1):
@@ -48,6 +46,12 @@ def do_ocr(url):
 		if i == numChars-1:
 			unsortedWords[-1].append(sortByTop[-1])
 
+	print 'number of unsorted words: '+str(len(unsortedWords))
+
+	if len(unsortedWords[-1]) == 0:
+		del unsortedWords[-1]
+
+
 	# exclude words based on different formatting
 
 	wi = 0
@@ -58,11 +62,22 @@ def do_ocr(url):
 			wi-=1
 		wi+=1
 
-	# now, sort words
+	# sort words (by left)
 
+	sortedWords = []
+	boxes = []
 	wordList = []
+
 	for i in range(len(unsortedWords)):
 		sortedWord = sorted(unsortedWords[i], key=ocrmean)
+
+		# generate boxes
+		boxes.append({'left':-1, 'right': -1, 'top':-1, 'bottom':-1})
+		boxes[i]['left'] =  sortedWord[0]['left']
+		boxes[i]['right'] = sortedWord[-1]['right']
+
+		boxes[i]['top']   = min(sortedWord, key=lambda item: item['top'])['top']
+		boxes[i]['bottom']= max(sortedWord, key=lambda item: item['bottom'])['bottom']
 
 		# now, add spaces
 		myWord = []
@@ -72,8 +87,7 @@ def do_ocr(url):
 			if(diff > 4):
 				myWord.append(' ')
 
-
-		wordList.append(''.join(myWord))
+		sortedWords.append(''.join(myWord))
 
 	# finally, clean words
 
@@ -86,20 +100,24 @@ def do_ocr(url):
 	regex_list = ['(\\$|[0-9]|\\.)+']
 	# clean_text(regex_list, wordList)
 
-	wordList = map(lambda item: clean_text(regex_list, item), wordList)
+	wordList = map(lambda item: clean_text(regex_list, item), sortedWords)
 
 	# TODO remove this dumb fix for trailing spaces and trailing element (and reverse)
 	# [u'Carne Asada Steak ', u'Quesadilla ', u'Carne Asada Plate ', u'Smothered Burrito ', u'Vegetarian Burrito ', u'Fiesta Chicken Burrito ', u'Barbacoa Burrit', u'Beef Burrit', u'Migas con Huev', u'Huevos ocn Chariz', '']
 
-	del wordList[-1]
+	# del wordList[-1]
 
 	for i in range(len(wordList)):
 		while wordList[i][-1] == ' ':
 			wordList[i] = wordList[i][:-1]
 
-	wordList.reverse()
+	itemList = [{'word': wordList[i], 'box':boxes[i]} for i in range(len(wordList))]
+
+	itemList.reverse()
 
 	returnDict = {
-		"item_list": wordList
+		"item_list": itemList,
 	}
 	return returnDict
+
+# print do_ocr('./static/menu1.jpeg')
