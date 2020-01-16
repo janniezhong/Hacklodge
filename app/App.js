@@ -512,9 +512,8 @@ class Preview extends React.Component {
       console.log("this should display if you pressed the example")
       menuPath = 'https://marketplace.canva.com/EADaoJv_rFk/1/0/618w/canva-red-brown-simple-mexican-menu-6nt2YAg2IKI.jpg';
       console.log(menuPath);
-
     } else {
-      console.log("You made a mistake :(");
+      console.log("u fuked up bro");
     }
     console.log(menuPath);
 
