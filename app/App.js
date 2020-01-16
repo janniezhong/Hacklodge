@@ -8,6 +8,8 @@ import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 //import { width, height, totalSize } from 'react-native-dimension';
 import ListItem from './ListItem';
+import BoxScreen from './BoxScreen';
+
 
 
 import GalleryScreen from './GalleryScreen';
@@ -264,11 +266,25 @@ class CameraScreen extends React.Component {
   zoomIn = () => this.setState({ zoom: this.state.zoom + 0.1 > 1 ? 1 : this.state.zoom + 0.1 });
 
   setFocusDepth = depth => this.setState({ depth });
-
-  takePicture = () => {
+ 
+  takePicture = async () => {
     if (this.camera) {
-      var imageObj = this.camera.takePictureAsync({ onPictureSaved: this.onPictureSaved });
+      let imagePromise =  await this.camera.takePictureAsync();
       
+      console.log("printing imagePromise:");
+      console.log(imagePromise);
+
+      // {onPictureSaved: this.onPictureSaved}
+      // imagePromise.then((obj) => {
+      //   console.log("printing obj:");
+      //   console.log(obj);
+      //   //this.setState({data: data});
+      // })
+      
+      let localURI = imagePromise.uri;
+      console.log("printing localURI:");
+      console.log(localURI);
+      this.props.navigation.navigate('Preview', {imgType: 'taken', imgURI: localURI,});
     }
   };
 
@@ -320,7 +336,7 @@ class CameraScreen extends React.Component {
   }
 
   renderGallery() {
-    return <GalleryScreen onPress={this.toggleView.bind(this)} />;
+    return <GalleryScreen navigation={this.props.navigation} onPress={this.toggleView.bind(this)} />;
   }
 
   renderNoPermissions = () => 
@@ -473,6 +489,11 @@ const previewStyles = StyleSheet.create({
 })
 
 class Preview extends React.Component {
+
+  renderBoxScreen() {
+    console.log("Made it to BoxScreen rendering!")
+    return <BoxScreen navigation={this.props.navigation} menuId = {this.props.navigation.getParam('menuId')} menuType='example' />;
+  }
   static navigationOptions = ({ navigation }) => { title: 'Preview' };
 
   chooseMenu = (menuNum) => {
@@ -487,18 +508,32 @@ class Preview extends React.Component {
 
   render(){
     const { navigation } = this.props;
-    var menuPath = this.chooseMenu(navigation.getParam('menuId'))
+    var imgType = navigation.getParam('imgType');
+    var menuPath = "";
+    if (imgType == 'taken'){
+      menuPath = navigation.getParam('imgURI');
+    } else {
+      menuPath = this.chooseMenu(navigation.getParam('menuId'));
+    }
+
+    const renderBox = this.renderBoxScreen();
+    //console.log(menuPath);
     // menuPath = require('./menus/wine-list.jpeg');
     return (
       <View title = "Preview" style = {styles.genericView}> 
-      <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {menuPath} />
+      <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {{uri: menuPath}} />
       <View style={styles.buttonWrapper, previewStyles.buttonWrapper}>
         <TouchableOpacity style={styles.button}
           onPress= {() => {
-            this.props.navigation.navigate('MenuList', {
-              menuType:'example', 
-              menuId:this.props.navigation.getParam('menuId')}
-            );
+            // this.props.navigation.navigate('BoxScreen', {
+            //   navigation:this.props.navigation,
+            //   menuType:'example', 
+            //   menuId: this.props.navigation.getParam('menuId'),
+            //   menuURI: menuPath}
+            // );
+            console.log("I pressed the next button!");
+            {renderBox}
+            console.log("I pressed the next button!");
           }}
         >
           <Text style={styles.buttonText}>Next</Text>
@@ -634,6 +669,12 @@ const AppNavigator = createStackNavigator({
       headerShown:false,
     }
   },
+  // BoxScreen:{
+  //   screen: BoxScreen,
+  //   navigationOptions: {
+  //     headerShown:false,
+  //   }
+  // },
   MenuList:{
     screen: MenuList,
     navigationOptions: {
