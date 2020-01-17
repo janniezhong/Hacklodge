@@ -8,6 +8,8 @@ import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 //import { width, height, totalSize } from 'react-native-dimension';
 import ListItem from './ListItem';
+import ImagePicker from 'react-native-image-picker';
+
 
 
 
@@ -519,6 +521,7 @@ class PhotoLibrary extends React.Component {
     }
     this.setState({ selected });
   };
+
   _getPhotoLibrary = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
      allowsEditing: true,
@@ -529,44 +532,16 @@ class PhotoLibrary extends React.Component {
     }
   }
 
-  saveToGallery = async () => {
-    const photos = this.state.selected;
-
-    if (photos.length == 1) {
-      // const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-      // if (status !== 'granted') {
-      //   throw new Error('Denied CAMERA_ROLL permissions!');
-      // }
-
-      const promises = photos.map(photoUri => {
-        return MediaLibrary.createAssetAsync(photoUri);
-      });
-        try {
-          const results = await Promise.all(promises)
-          console.log("print promises");
-          console.log(results);
-
-          let localURI = results[0].uri;
-
-          console.log("print localURI");
-          console.log(localURI);
-
-
-      
-
-          this.props.navigation.navigate('Preview', {imgType: 'taken', imgURI: localURI,})
-        } catch(err){
-        console.log(err);
-      }
-
-      //alert('Successfully saved photos to user\'s gallery!');
-    } else if (photos.length == 0) {
-      alert('No photos to save!');
-    } else {
-      alert('Please only choose one picture!')
+  handleChoosePhoto = () => {
+    const options = {
+      noData: true,
     }
-  };
+    ImagePicker.launchImageLibrary(options, response => {
+      if (response.uri) {
+        this.setState({ photo: response })
+      }
+    })
+  }
 
   // renderPhoto = fileName => 
   //   <Photo
@@ -596,33 +571,19 @@ class PhotoLibrary extends React.Component {
   // }
 
   render() {
-    const { image, hasCameraPermission } = this.state;
-    if (hasCameraPermission === null) {
-     return <View />
-    }
-    else if (hasCameraPermission === false) {
-     return <Text>Access to camera has been denied.</Text>;
-    }
-    else {
+ 
      return (
-      <View style={{ flex: 1 }}>
-       <View style={styles.activeImageContainer}>
-        {image ? (
-         <Image source={{ uri: image }} style={{ flex: 1 }} />
-        ) : (
-         <View />
-        )}
-      </View>
+
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
        <Button 
          onPress={this._getPhotoLibrary.bind(this)} 
          title="Photo Picker Screen!"
        />
+
       </View>
-     </View>
      );
     }
-   }
+   
 }
 
 // const styles = StyleSheet.create({

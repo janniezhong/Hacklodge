@@ -2176,7 +2176,7 @@ expo-asset@~8.0.0:
     path-browserify "^1.0.0"
     url-parse "^1.4.4"
 
-expo-barcode-scanner@~8.0.0:
+expo-barcode-scanner@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/expo-barcode-scanner/-/expo-barcode-scanner-8.0.0.tgz#f574191621907aa286cf47f6757031cc112720a5"
   integrity sha512-8RCloJFXsx1ToXBRNHAjJ14fhHTKzumqY9Vz9Tmk/PRwMEFSpNNsVrlZ2Vp229wJQxOuVsGA5oHkbeeHdt7m9Q==
@@ -2184,7 +2184,7 @@ expo-barcode-scanner@~8.0.0:
     lodash "^4.6.0"
     prop-types "^15.6.0"
 
-expo-camera@~8.0.0:
+expo-camera@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-8.0.0.tgz#a0caee7baf1f2013203fe6a4635125ade12ec164"
   integrity sha512-mtP4NV2R4e+JTXUZBiA0ok4xSzTfRLxirvqJ5T7kjyozuCWUJeOhGk3hqNsBbWhwXDA+hirAge7169UB3vKfDQ==
@@ -2204,12 +2204,12 @@ expo-error-recovery@~1.0.0:
   resolved "https://registry.yarnpkg.com/expo-error-recovery/-/expo-error-recovery-1.0.0.tgz#2ca9d59fcd16c5c881af877993731056f2d46afe"
   integrity sha512-xnxciNEpGmwxx8BAE2A9fd9HxtzWtz8p9mikKU+EfWgOXaYD3FJwgbFoVLD2pm4QUarxwOcic76rcwg+0cNnGg==
 
-expo-face-detector@~8.0.0:
+expo-face-detector@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/expo-face-detector/-/expo-face-detector-8.0.0.tgz#dd8fcdffba2200bc8d96c0c26e1456ab42315226"
   integrity sha512-eO1JQ8DdtRJbsubb8a3QvEPrajz8QmLVEF6rcJP82NoS8d4cPgprcs65GNgxixJS1ZrVTEnqjDlNtcVA2FtsQg==
 
-expo-file-system@~8.0.0:
+expo-file-system@^8.0.0, expo-file-system@~8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/expo-file-system/-/expo-file-system-8.0.0.tgz#60b90c8a375308dc85922592a77531a8e0cde6f7"
   integrity sha512-mi84jt3EHVUfxu5eGOikNuRDi7+5daCFSP9LVgk5aQz8Oepo143vnH/+WE4lQEg+u8dB6EmmCWncyc2Fklxv7A==
@@ -2223,10 +2223,12 @@ expo-font@~8.0.0:
   dependencies:
     fontfaceobserver "^2.1.0"
 
-expo-image-picker@~8.0.1:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-8.0.1.tgz#bae9e0d89722de9a6e60e55f0e4291fc099abb14"
-  integrity sha512-f4KVQFZSgNiYlt8smZ9kc/gaHkJeFLhRYiSgQdOlmLOkCuX4jxtg++PjCZLSSVwMVv/DUHT0EvUzOZqJokZfdg==
+expo-image-picker@^8.0.1:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-8.0.2.tgz#14139f1d73793ae7fba6fe3cf34e1dc91baf402a"
+  integrity sha512-oa0/JoKIv5mxyadpVqiQ+BXak2s7QS3+Rurj1j/gL5GGFmb3cDJWbGHxvtrEXEccv8812JAp5BfBRqfzlW1gMQ==
+  dependencies:
+    expo-permissions "*"
 
 expo-keep-awake@~8.0.0:
   version "8.0.0"
@@ -2245,12 +2247,12 @@ expo-location@~8.0.0:
   dependencies:
     invariant "^2.2.4"
 
-expo-media-library@~8.0.0:
+expo-media-library@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/expo-media-library/-/expo-media-library-8.0.0.tgz#d763a2f39a81348d357171be5ea486679c2edb86"
   integrity sha512-7TIcJjmQq+sH3deIVjwyQYa3nVsLZZUj6fQYA3R+DrFNRT6ehmd1Lai0klTa7ma3pflPEC4Uv2zOyf53alvD2w==
 
-expo-permissions@~8.0.0:
+expo-permissions@*, expo-permissions@^8.0.0, expo-permissions@~8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/expo-permissions/-/expo-permissions-8.0.0.tgz#5a45e8451dd7ff37c9e6ce5e2447818372547813"
   integrity sha512-GHTRmwh1rd1b0FcibluPFu93NNQyl9b1anBBDVPmomoo9Prz7kDcO5p2hFqM99r896yvAUSe0fPloPKUq4g/1A==
@@ -4229,10 +4231,10 @@ react-native-gesture-handler@~1.5.0:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
-react-native-image-picker@^0.28.0:
-  version "0.28.1"
-  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-0.28.1.tgz#1127460522e0c9741fc62f3d040271d298fb6a6e"
-  integrity sha512-CW2dm+cjsdW2fjBW2WD/cSufNG0x0UpljwGHrjSzyB0TckoW+tjYv44UWtckCWxr1JtCg+QrYDO/MzlRyFcjwQ==
+react-native-image-picker@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-2.0.0.tgz#237f08109ec6824607de2458847700242186bd2a"
+  integrity sha512-svmQJ5bBuCgX9RG5DU3A38udgemze1/HtYUXgUAvP2i3LzrzW5ub5GT3L8n87pg/DNj2rRHi1wLtNaNEoV4ZAw==
 
 react-native-iphone-x-helper@^1.2.1:
   version "1.2.1"
