@@ -20,3 +20,5 @@ app/.expo/*
 app/.expo
 app/.expo/**/*
 
+app/.expo/packager-info.json
+app/.expo/settings.json

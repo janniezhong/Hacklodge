@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { ScrollView, Image, Button, StyleSheet, Text, View, Alert, TouchableOpacity, Slider, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { Modal, ScrollView, Image, Button, StyleSheet, Text, View, Alert, TouchableOpacity, TouchableHighlight, Slider, Platform } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import Constants from 'expo-constants';
@@ -10,7 +10,6 @@ import * as Permissions from 'expo-permissions';
 import ListItem from './ListItem';
 //import ImagePicker from 'react-native-image-picker';
 import * as ImagePicker from 'expo-image-picker';
-
 
 
 
@@ -450,8 +449,20 @@ class CameraScreen extends React.Component {
 
 //Home Screen
 
+
+
 class HomeScreen extends React.Component{
+
+  state = {
+    modalVisible: false,
+  };
+
+  setModalVisible(status){
+    this.setState({ modalVisible: status });
+  }  
+  
   render(){
+    
     return (
       <View style = {styles.genericView}>
 
@@ -469,20 +480,61 @@ class HomeScreen extends React.Component{
             <Text style={styles.buttonText}>Upload Picture</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button}
-            onPress = {() => this.props.navigation.navigate('Preview', {imgType:'example',})}
+            onPress = {() => {
+                //this.props.navigation.navigate('Preview', {imgType:'example',})
+                this.setModalVisible(true);
+            }}
           >
             <Text style={styles.buttonText}>See an Example</Text>
           </TouchableOpacity>
         </View>
 
-        {/* <Button
-        title="Sample Menu 2"
-        onPress = {() => this.props.navigation.navigate('Preview', {menuId:2,})}
-        />
-        <Button
-        title="Sample Menu 3"
-        onPress = {() => this.props.navigation.navigate('Preview', {menuId:3,})}
-        /> */}
+
+        <View style={{ marginTop: 22 }}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+          }}>
+            <View style={{flex: 1, flexDirection: 'column'}}>
+              <View style = {{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFC8BE'}}>
+                <TouchableOpacity style={styles.button}
+                  onPress = {() => {
+                    console.log("pressed the first button!");
+                    this.setModalVisible(false);
+                    this.props.navigation.navigate('Preview', {imgType:'example', menuID: 1,})                 
+                  }}
+                >
+                  <Text style={styles.buttonText}>Example Menu 1</Text>
+                </TouchableOpacity>
+              </View>
+              <View style = {{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFC8BE'}}>
+                <TouchableOpacity style={styles.button}
+                  onPress = {() => {
+                    console.log("pressed the second button!");
+                    this.setModalVisible(false);
+                    this.props.navigation.navigate('Preview', {imgType:'example', menuID: 2,})                 
+                  }}
+                >
+                  <Text style={styles.buttonText}>Example Menu 2</Text>
+                </TouchableOpacity>
+              </View>
+              <View style = {{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFC8BE'}}>
+                <TouchableOpacity style={styles.button}
+                  onPress = {() => {
+                    console.log("pressed the third button!");
+                    this.setModalVisible(false);
+                    this.props.navigation.navigate('Preview', {imgType:'example', menuID: 3,})                 
+                  }}
+                >
+                  <Text style={styles.buttonText}>Example Menu 3</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+      </View>
       </View>
     );
   }
@@ -647,14 +699,23 @@ class Preview extends React.Component {
   render(){
     const { navigation } = this.props;
     var imgType = navigation.getParam('imgType');
+    var exMenuID = navigation.getParam('menuID');
     var menuPath = "";
     if (imgType == 'taken'){
       menuPath = navigation.getParam('imgURI');
     } else if (imgType == 'example'){
       console.log("this should display if you pressed the example")
       // menuPath = 'https://marketplace.canva.com/EADaoJv_rFk/1/0/618w/canva-red-brown-simple-mexican-menu-6nt2YAg2IKI.jpg';
-      menuPath = `${host}/static/menu1.jpg`;
+      
+      // menuPath = `${host}/static/menu1.jpg`;
       console.log(menuPath);
+      if (exMenuID == 1){
+        menuPath = 'https://marketplace.canva.com/EADaoJv_rFk/1/0/618w/canva-red-brown-simple-mexican-menu-6nt2YAg2IKI.jpg';
+      } else if (exMenuID == 2){
+        menuPath = 'https://cdn.mycreativeshop.com/images/templates/17025/simple-dinner-party-menu-template-32768-flat1.jpg';
+      } else {
+        menuPath = 'https://images.template.net/wp-content/uploads/2015/04/Italian-Restaurant-Menu-Template-in-Word.jpg';
+      }
     } else {
       console.log("u fuked up bro");
     }
