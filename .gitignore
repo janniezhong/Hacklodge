@@ -16,7 +16,7 @@ web-report/
 .DS_Store
 
 node_modules
-
 app/.expo/*
 app/.expo
 app/.expo/**/*
+
