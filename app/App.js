@@ -570,11 +570,57 @@ class BoxScreen extends React.Component {
     });
   }
 
-  render(){
+  state = {
+    boxes: [
+      {top:  0, left: 0,  right: 10,  bottom: 10},
+      {top:  30,left: 30, right: 70,  bottom: 45},
+      {top:  0, left: 20, right: 30,  bottom: 10},
+      {top:  90,left: 90, right: 100, bottom: 100}
+    ]
+  }
+
+  render() {
+
+
     const { navigation } = this.props;
     return (
       <View title = "Preview" style = {styles.genericView}> 
-      <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {{uri:navigation.getParam('imgURI')}} />
+
+      <View style = {{ 
+        height: 500, 
+        width: 400, 
+        backgroundColor:'#00FF00', 
+        borderColor:'#000000', 
+        borderWidth:3
+      }} >
+        <Image style={{
+          position:'absolute',
+          top:0,
+          left:0,
+          width:'100%',
+          height:'100%',
+          resizeMode: 'stretch',
+          margin:0,
+          padding:0,
+        }} source = {{ uri:navigation.getParam('imgURI') }} />
+
+        {
+          this.state.boxes.map((box) => (
+            <View style={{
+              position:'absolute',
+              top: `${box.top}%`,
+              left:`${box.left}%`,
+              borderColor:'#FF0000',
+              borderWidth:2,
+              width:`${box.right-box.left}%`,
+              height:`${box.bottom-box.top}%`,
+            }}></View>
+          ))
+        }
+      </View>
+
+      {/* <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {{uri:navigation.getParam('imgURI')}} /> */}
+
       <View style={styles.buttonWrapper, previewStyles.buttonWrapper}>
         <TouchableOpacity style={styles.button}
           onPress= {() => {
