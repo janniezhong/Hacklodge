@@ -487,10 +487,10 @@ class Preview extends React.Component {
 
   state = {
     boxes: [
-      {top:  0, left:  0, right: 10, bottom: 10},
+      {top:  0,  left:  0,  right: 10, bottom: 10},
       {top:  30, left:  30, right: 70, bottom: 45},
-      {top:  0, left:  20, right: 30, bottom: 10},
-      {top:  90, left: 90, right: 100, bottom: 100}
+      {top:  0,  left:  20, right: 30, bottom: 10},
+      {top:  90, left:  90, right: 100, bottom: 100}
     ]
   }
 
@@ -518,13 +518,13 @@ class Preview extends React.Component {
           resizeMode: 'stretch',
           margin:0,
           padding:0,
-        }}source = {menuPath} />
+        }} source = {menuPath} />
 
         {
           this.state.boxes.map((box) => (
             <View style={{
               position:'absolute',
-              top:`${box.top}%`,
+              top: `${box.top}%`,
               left:`${box.left}%`,
               borderColor:'#FF0000',
               borderWidth:2,
