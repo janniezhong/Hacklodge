@@ -32,7 +32,7 @@ export default class GalleryScreen extends React.Component {
     this.setState({ selected });
   };
 
-  saveToGallery = async () => {
+  chooseToPreview = async () => {
     const photos = this.state.selected;
 
     if (photos.length == 1) {
@@ -85,7 +85,7 @@ export default class GalleryScreen extends React.Component {
           <TouchableOpacity style={styles.button} onPress={this.props.onPress}>
             <MaterialIcons name="arrow-back" size={25} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={this.saveToGallery}>
+          <TouchableOpacity style={styles.button} onPress={this.chooseToPreview}>
             <Text style={styles.whiteText}>Preview Selected</Text>
           </TouchableOpacity>
         </View>

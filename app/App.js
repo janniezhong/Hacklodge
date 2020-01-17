@@ -26,7 +26,7 @@ import { emitNotification } from 'expo/build/Notifications/Notifications';
 //constants
 
 const host = 'http://57b9f852.ngrok.io'
-
+const PHOTOS_DIR = FileSystem.documentDirectory + 'photos';
 const images = {
   menuOne: require
 }
@@ -458,7 +458,7 @@ class HomeScreen extends React.Component{
             <Text style={styles.buttonText}>Take Picture</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button}
-            onPress = {() => this.props.navigation.navigate('UploadPicture')}
+            onPress = {() => this.props.navigation.navigate('PhotoLibrary')}
           >
             <Text style={styles.buttonText}>Upload Picture</Text>
           </TouchableOpacity>
@@ -491,6 +491,170 @@ const previewStyles = StyleSheet.create({
     paddingRight:10,
   },
 })
+
+
+//********************************************************************************************** */
+
+class PhotoLibrary extends React.Component {
+  state = {
+    faces: {},
+    images: {},
+    photos: [],
+    selected: [],
+    hasCameraPermission: null,
+    image: null,
+  };
+
+  componentDidMount = async () => {
+    const photos = await FileSystem.readDirectoryAsync(PHOTOS_DIR);
+    this.setState({ photos });
+  };
+
+  toggleSelection = (uri, isSelected) => {
+    let selected = this.state.selected;
+    if (isSelected) {
+      selected.push(uri);
+    } else {
+      selected = selected.filter(item => item !== uri);
+    }
+    this.setState({ selected });
+  };
+  _getPhotoLibrary = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+     allowsEditing: true,
+     aspect: [4, 3]
+    });
+    if (!result.cancelled) {
+     this.setState({ image: result.uri });
+    }
+  }
+
+  saveToGallery = async () => {
+    const photos = this.state.selected;
+
+    if (photos.length == 1) {
+      // const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+
+      // if (status !== 'granted') {
+      //   throw new Error('Denied CAMERA_ROLL permissions!');
+      // }
+
+      const promises = photos.map(photoUri => {
+        return MediaLibrary.createAssetAsync(photoUri);
+      });
+        try {
+          const results = await Promise.all(promises)
+          console.log("print promises");
+          console.log(results);
+
+          let localURI = results[0].uri;
+
+          console.log("print localURI");
+          console.log(localURI);
+
+
+      
+
+          this.props.navigation.navigate('Preview', {imgType: 'taken', imgURI: localURI,})
+        } catch(err){
+        console.log(err);
+      }
+
+      //alert('Successfully saved photos to user\'s gallery!');
+    } else if (photos.length == 0) {
+      alert('No photos to save!');
+    } else {
+      alert('Please only choose one picture!')
+    }
+  };
+
+  // renderPhoto = fileName => 
+  //   <Photo
+  //     key={fileName}
+  //     uri={`${PHOTOS_DIR}/${fileName}`}
+  //     onSelectionToggle={this.toggleSelection}
+  //   />;
+
+  // render() {
+  //   return (
+  //     <View style={styles.container}>
+  //       <View style={styles.navbar}>
+  //         <TouchableOpacity style={styles.button} onPress={this.props.onPress}>
+  //           <MaterialIcons name="arrow-back" size={25} color="white" />
+  //         </TouchableOpacity>
+  //         <TouchableOpacity style={styles.button} onPress={this.saveToGallery}>
+  //           <Text style={styles.whiteText}>Preview Selected</Text>
+  //         </TouchableOpacity>
+  //       </View>
+  //       <ScrollView contentComponentStyle={{ flex: 1 }}>
+  //         <View style={styles.pictures}>
+  //           {this.state.photos.map(this.renderPhoto)}
+  //         </View>
+  //       </ScrollView>
+  //     </View>
+  //   );
+  // }
+
+  render() {
+    const { image, hasCameraPermission } = this.state;
+    if (hasCameraPermission === null) {
+     return <View />
+    }
+    else if (hasCameraPermission === false) {
+     return <Text>Access to camera has been denied.</Text>;
+    }
+    else {
+     return (
+      <View style={{ flex: 1 }}>
+       <View style={styles.activeImageContainer}>
+        {image ? (
+         <Image source={{ uri: image }} style={{ flex: 1 }} />
+        ) : (
+         <View />
+        )}
+      </View>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+       <Button 
+         onPress={this._getPhotoLibrary.bind(this)} 
+         title="Photo Picker Screen!"
+       />
+      </View>
+     </View>
+     );
+    }
+   }
+}
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     paddingTop: 20,
+//     backgroundColor: 'white',
+//   },
+//   navbar: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     justifyContent: 'space-between',
+//     backgroundColor: '#4630EB',
+//   },
+//   pictures: {
+//     flex: 1,
+//     flexWrap: 'wrap',
+//     flexDirection: 'row',
+//     justifyContent: 'space-around',
+//     paddingVertical: 8,
+//   },
+//   button: {
+//     padding: 20,
+//   },
+//   whiteText: {
+//     color: 'white',
+//   }
+// });
+
+
+//********************************************************************************************** */
+
 
 //Preview Screen
 
@@ -556,7 +720,7 @@ class BoxScreen extends React.Component {
    };
     formData.append('photo', photo);
 
-    fetch(`${host}/info`, {
+    fetch(`${host}/upload`, {
       method:'POST',
       body: formData
     })
@@ -687,16 +851,6 @@ class Details extends React.Component{
   }
 }
 
-class UploadPicture extends React.Component{
-  render(){
-    return(
-      <View style = {{alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Upload Picture</Text>
-      </View>
-    );
-  }
-}
-
 const AppNavigator = createStackNavigator({
   Home: {
     screen: HomeScreen,
@@ -710,8 +864,8 @@ const AppNavigator = createStackNavigator({
       headerShown:false,
     }
   },
-  UploadPicture:{
-    screen: UploadPicture,
+  PhotoLibrary:{
+    screen: PhotoLibrary,
     navigationOptions: {
       headerShown:false,
     }
