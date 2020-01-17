@@ -8,7 +8,8 @@ import * as FileSystem from 'expo-file-system';
 import * as Permissions from 'expo-permissions';
 //import { width, height, totalSize } from 'react-native-dimension';
 import ListItem from './ListItem';
-import ImagePicker from 'react-native-image-picker';
+//import ImagePicker from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 
 
 
@@ -529,6 +530,8 @@ class PhotoLibrary extends React.Component {
     });
     if (!result.cancelled) {
      this.setState({ image: result.uri });
+     this.props.navigation.navigate('Preview', {imgType: 'taken', imgURI: result.uri,})
+
     }
   }
 
@@ -577,10 +580,10 @@ class PhotoLibrary extends React.Component {
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
        <Button 
          onPress={this._getPhotoLibrary.bind(this)} 
-         title="Photo Picker Screen!"
+         title="Pick a photo from your photo library"
        />
-
       </View>
+
      );
     }
    
