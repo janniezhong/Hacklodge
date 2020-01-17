@@ -21,6 +21,11 @@ def do_ocr(url):
 	# get image data
 	imgWidth, imgHeight = myImg.size
 
+	pdf = pytesseract.image_to_pdf_or_hocr(teststr_1, extension='pdf')
+	with open('test.pdf', 'w+b') as f:
+		f.write(pdf) # pdf type is bytes by default
+
+	return pytesseract.image_to_string(myImg)
 
 	box_data = pytesseract.image_to_boxes(myImg, output_type=pytesseract.Output.DICT)
 
@@ -37,6 +42,8 @@ def do_ocr(url):
 			'left':   box_data.get('left')[i],
 			'top':    box_data.get('top')[i]
 		})
+
+	print charList
 
 	sortByTop = sorted(charList, key=lambda item: item.get('top'))
 
@@ -57,7 +64,6 @@ def do_ocr(url):
 
 	if len(unsortedWords[-1]) == 0:
 		del unsortedWords[-1]
-
 
 	# exclude words based on different formatting
 
@@ -115,8 +121,7 @@ def do_ocr(url):
 	# del wordList[-1]
 
 	for i in range(len(wordList)):
-		while wordList[i][-1] == ' ':
-			wordList[i] = wordList[i][:-1]
+		wordList[i] = wordList[i].strip()
 
 	itemList = [{'word': wordList[i], 'box':boxes[i]} for i in range(len(wordList))]
 
@@ -131,3 +136,4 @@ def do_ocr(url):
 	return returnDict
 
 # print do_ocr('./static/menu1.jpeg')
+print do_ocr('./uploads/photo.jpg')

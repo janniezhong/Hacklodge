@@ -627,7 +627,23 @@ class PhotoLibrary extends React.Component {
 
 class Preview extends React.Component {
   static navigationOptions = ({ navigation }) => { title: 'Preview' }; 
+  componentDidMount() {
+    const formData = new FormData();
+    formData.append('photo', {
+      uri:this.props.navigation.getParam('imgURI'),
+      type:'image/jpeg',
+      name:'photo.jpg',
+    });
 
+    fetch(`${host}/upload`, {
+      method: 'POST',
+      body: formData,
+    })
+    .then((response) => response.json())
+    .then((result) => {
+      console.log('Success:', result);
+    });
+  }
   render(){
     const { navigation } = this.props;
     var imgType = navigation.getParam('imgType');
@@ -636,7 +652,8 @@ class Preview extends React.Component {
       menuPath = navigation.getParam('imgURI');
     } else if (imgType == 'example'){
       console.log("this should display if you pressed the example")
-      menuPath = 'https://marketplace.canva.com/EADaoJv_rFk/1/0/618w/canva-red-brown-simple-mexican-menu-6nt2YAg2IKI.jpg';
+      // menuPath = 'https://marketplace.canva.com/EADaoJv_rFk/1/0/618w/canva-red-brown-simple-mexican-menu-6nt2YAg2IKI.jpg';
+      menuPath = `${host}/static/menu1.jpg`;
       console.log(menuPath);
     } else {
       console.log("u fuked up bro");
@@ -674,17 +691,8 @@ class BoxScreen extends React.Component {
   static navigationOptions = ({ navigation }) => { title: 'Preview' };1
 
   componentDidMount() {
-    let formData = new FormData();
-    var photo = {
-      uri: this.props.navigation.getParam('imgURI'),
-      type: 'image/jpeg',
-      name: 'photo.jpg',
-   };
-    formData.append('photo', photo);
-
-    fetch(`${host}/upload`, {
+    fetch(`${host}/ocr`, {
       method:'POST',
-      body: formData
     })
     .then((response) => response.json())
     .then((data) => {
@@ -697,18 +705,7 @@ class BoxScreen extends React.Component {
   }
 
   state = {
-    boxes: [
-      {'top': 38.0, 'right': 41.74757281553398, 'bottom': 39.37500000000001, 'left': 16.990291262135923},
-      {'top': 40.625, 'right': 38.18770226537217, 'bottom': 42.25, 'left': 16.990291262135923},
-      {'top': 43.125, 'right': 32.038834951456316, 'bottom': 44.49999999999999, 'left': 16.990291262135923},
-      {'top': 45.75, 'right': 38.18770226537217, 'bottom': 47.12499999999999, 'left': 16.990291262135923},
-      {'top': 61.375, 'right': 82.84789644012946, 'bottom': 62.875, 'left': 17.313915857605178},
-      {'top': 63.875, 'right': 82.84789644012946, 'bottom': 66.0, 'left': 17.313915857605178},
-      {'top': 66.125, 'right': 82.84789644012946, 'bottom': 68.0, 'left': 17.313915857605178},
-      {'top': 82.375, 'right': 82.52427184466019, 'bottom': 84.0, 'left': 16.990291262135923},
-      {'top': 84.125, 'right': 82.52427184466019, 'bottom': 87.625, 'left': 15.53398058252427},
-      {'top': 87.5, 'right': 82.52427184466019, 'bottom': 89.0, 'left': 16.990291262135923}
-    ]
+    data:{item_list:[]}
   }
 
   render() {
@@ -734,15 +731,17 @@ class BoxScreen extends React.Component {
         }} source = {{ uri:navigation.getParam('imgURI') }} />
 
         {
-          this.state.boxes.map((box) => (
-            <View style={{
+          this.state.data.item_list.map((item,i) => (
+            <View 
+            key={i}
+            style={{
               position:'absolute',
-              top: `${box.top}%`,
-              left:`${box.left}%`,
+              top: `${item.box.top}%`,
+              left:`${item.box.left}%`,
               borderColor:'#FF0000',
               borderWidth:2,
-              width:`${box.right-box.left}%`,
-              height:`${box.bottom-box.top}%`,
+              width:`${item.box.right-item.box.left}%`,
+              height:`${item.box.bottom-item.box.top}%`,
             }}></View>
           ))
         }
@@ -755,9 +754,7 @@ class BoxScreen extends React.Component {
           onPress= {() => {
             this.props.navigation.navigate('MenuList', {
               navigation:this.props.navigation,
-              imgType:'example', 
               imgURI: navigation.getParam('menuURI'),
-              apples: 'bananas'
             });
           }}
         >
@@ -780,9 +777,10 @@ class MenuList extends React.Component{
   };
   state = {
     // data: {item_list: ["Scrambled Eggs"]}
-    data: {item_list: ["Loading..."]}
+    data: {item_list: [{word:"Loading..."}]}
   }
   componentDidMount() {
+    /*
     if(this.props.navigation.getParam('menuType') == 'example') {
       let menuId = this.props.navigation.getParam('menuId');
 
@@ -801,7 +799,23 @@ class MenuList extends React.Component{
         console.error(error);
       });
       // this.setState({names:["Huevos ocn Chariz", "Migas con Huev", "Beef Burrit", "Barbacoa Burrit", "Fiesta Chicken Burrito ", "Vegetarian Burrito ", "Smothered Burrito ", "Carne Asada Plate ", "Quesadilla ", "Carne Asada Steak "]});
-    }
+    }*/
+
+
+    // menuURI = this.props.navigation.getParam('menuURI');
+    // let formData = new FormData();
+    fetch(`${host}/ocr`, {
+      method:'POST',
+      // body: formData
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Success:', data);
+      this.setState({data: data});
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 
 
   }
@@ -809,8 +823,8 @@ class MenuList extends React.Component{
   render(){
     return(
       <ScrollView>
-      {this.state.data.item_list.map((name, i) => 
-        (<ListItem key={name} navigation={this.props.navigation} menuItemName={name} listParity={i%2} />)
+      {this.state.data.item_list.map((obj, i) => 
+        (<ListItem key={obj.word} navigation={this.props.navigation} menuItemName={obj.word} listParity={i%2} />)
       )}
       </ScrollView>
     );

@@ -36,31 +36,30 @@
 
 
 		<script>
-			function testUpload() {
-				const fileField = document.querySelector('input[type="file"]');
+		function testUpload() {
+			const fileField = document.querySelector('input[type="file"]');
 
-				const formData = new FormData();
+			const formData = new FormData();
 
-				formData.append('file', {
-					uri:'file:///Users/alan/Desktop/graduation-cap-academy-hat-vector-8595792.jpg',
-					type:'image/jpeg',
-					name:'photo.jpg',
-				});
+			formData.append('file', {
+				uri:'file:///Users/alan/Desktop/graduation-cap-academy-hat-vector-8595792.jpg',
+				type:'image/jpeg',
+				name:'photo.jpg',
+			});
 
-				fetch('http://localhost:5000/upload', {
-					method: 'POST',
-					headers: {
-						'Content-Type':'multipart/form-data'
-					},
-					body: formData,
-					mode:'no-cors'
-				})
-				.then((response) => response.json())
-				.then((result) => {
-				  console.log('Success:', result);
-				});
-
-			}
+			fetch('http://localhost:5000/upload', {
+				method: 'POST',
+				headers: {
+					'Content-Type':'multipart/form-data'
+				},
+				body: formData,
+				mode:'no-cors'
+			})
+			.then((response) => response.json())
+			.then((result) => {
+			  console.log('Success:', result);
+			});
+		}
 		</script>
 
 	</body>

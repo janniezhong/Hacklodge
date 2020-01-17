@@ -22,10 +22,6 @@ app = Flask(__name__)
 def hello():
     return '{"hello":"world"}'
 
-@app.route("/display/<text>", methods=['GET'])
-def display(text):
-	return text
-
 @app.route("/boxes", methods=['POST'])
 def boxes():
 	print request.form.files['photo']
@@ -59,21 +55,27 @@ def info():
 def ocr():
 	menuid = request.form.get('menu_id')
 
-	myUrl = './static/menu1.jpeg'
-	if menuid == '2':
-		myUrl = './static/menu2.jpeg'
-		print myUrl
-	elif menuid == '3':
-		myUrl = './static/menu3.jpeg'
+	myUrl = './uploads/photo.jpg'	
+
+	# myUrl = './static/menu1.jpeg'
+	# if menuid == '2':
+	# 	myUrl = './static/menu2.jpeg'
+	# 	print myUrl
+	# elif menuid == '3':
+	# 	myUrl = './static/menu3.jpeg'
 
 	returnDict = do_ocr(myUrl)
 	return json.dumps(returnDict)
 
 @app.route("/upload", methods=['POST'])
 def upload():
+	print 'printing request.files'
+	print request.files
+
+
 	request.files.get('photo').save('uploads/photo.jpg')
 
-	return '{"message":"successfully connected"}'
+	return '{"message":"successfully uploaded"}'
 
 
 # for debugging
