@@ -14,6 +14,9 @@ web-report/
 
 # macOS
 .DS_Store
+
 node_modules
-app/.expo/packager-info.json
-app/.expo/packager-info.json
+app/.expo/*
+app/.expo
+app/.expo/**/*
+
