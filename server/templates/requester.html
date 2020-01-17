@@ -38,15 +38,20 @@
 		<script>
 			function testUpload() {
 				const fileField = document.querySelector('input[type="file"]');
+
 				const formData = new FormData();
 
-				formData.append('file', fileField.files[0]);
-
-				console.log(fileField.files[0]);
-				console.log(formData);;
+				formData.append('file', {
+					uri:'file:///Users/alan/Desktop/graduation-cap-academy-hat-vector-8595792.jpg',
+					type:'image/jpeg',
+					name:'photo.jpg',
+				});
 
 				fetch('http://localhost:5000/upload', {
 					method: 'POST',
+					headers: {
+						'Content-Type':'multipart/form-data'
+					},
 					body: formData,
 					mode:'no-cors'
 				})

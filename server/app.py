@@ -65,11 +65,7 @@ def ocr():
 
 @app.route("/upload", methods=['POST'])
 def upload():
-	print 'type of file:'+str(request.files['file'])
-	# filename = secure_filename(file.filename)
-	file = request.files['file']
-	file.save('uploads/photo.jpg')
-
+	request.files.get('photo').save('uploads/photo.jpg')
 
 	return '{"message":"successfully connected"}'
 
