@@ -1,3 +1,5 @@
+from __future__ import division
+
 # import environment variables
 from environment import *
 

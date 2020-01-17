@@ -1,3 +1,4 @@
+from __future__ import division
 try:
     from PIL import Image
 except ImportError:
@@ -15,7 +16,13 @@ pytesseract.pytesseract.tesseract_cmd = r'/usr/local/bin/tesseract'
 
 def do_ocr(url):
 	teststr_1 = url
-	box_data = pytesseract.image_to_boxes(Image.open(teststr_1), output_type=pytesseract.Output.DICT)
+	myImg = Image.open(teststr_1)
+
+	# get image data
+	imgWidth, imgHeight = myImg.size
+
+
+	box_data = pytesseract.image_to_boxes(myImg, output_type=pytesseract.Output.DICT)
 
 	numChars = len(box_data.get('right'))
 
@@ -73,11 +80,11 @@ def do_ocr(url):
 
 		# generate boxes
 		boxes.append({'left':-1, 'right': -1, 'top':-1, 'bottom':-1})
-		boxes[i]['left'] =  sortedWord[0]['left']
-		boxes[i]['right'] = sortedWord[-1]['right']
+		boxes[i]['left'] =  (sortedWord[0]['left']/imgWidth)*100;
+		boxes[i]['right'] = (sortedWord[-1]['right']/imgWidth)*100;
 
-		boxes[i]['top']   = min(sortedWord, key=lambda item: item['top'])['top']
-		boxes[i]['bottom']= max(sortedWord, key=lambda item: item['bottom'])['bottom']
+		boxes[i]['top']   = 100-(max(sortedWord, key=lambda item: item['top'])['top']/imgHeight)*100;
+		boxes[i]['bottom']= 100-(min(sortedWord, key=lambda item: item['bottom'])['bottom']/imgHeight)*100;
 
 		# now, add spaces
 		myWord = []
@@ -118,6 +125,9 @@ def do_ocr(url):
 	returnDict = {
 		"item_list": itemList,
 	}
+	print imgWidth
+	print imgHeight
+
 	return returnDict
 
 # print do_ocr('./static/menu1.jpeg')
