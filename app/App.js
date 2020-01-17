@@ -757,6 +757,7 @@ class BoxScreen extends React.Component {
               navigation:this.props.navigation,
               imgType:'example', 
               imgURI: navigation.getParam('menuURI'),
+              apples: 'bananas'
             });
           }}
         >
