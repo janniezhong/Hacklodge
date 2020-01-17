@@ -756,8 +756,8 @@ class BoxScreen extends React.Component {
             this.props.navigation.navigate('MenuList', {
               navigation:this.props.navigation,
               imgType:'example', 
-              imgURI: navigation.getParam('menuURI')}
-            );
+              imgURI: navigation.getParam('menuURI'),
+            });
           }}
         >
           <Text style={styles.buttonText}>Next</Text>
@@ -786,7 +786,7 @@ class MenuList extends React.Component{
       let menuId = this.props.navigation.getParam('menuId');
 
       let formData = new FormData();
-      formData.append('menu_id', menuId);
+      // formData.append('menu_id', menuId);
       fetch(`${host}/ocr`, {
         method:'POST',
         body: formData
@@ -801,6 +801,8 @@ class MenuList extends React.Component{
       });
       // this.setState({names:["Huevos ocn Chariz", "Migas con Huev", "Beef Burrit", "Barbacoa Burrit", "Fiesta Chicken Burrito ", "Vegetarian Burrito ", "Smothered Burrito ", "Carne Asada Plate ", "Quesadilla ", "Carne Asada Steak "]});
     }
+
+
   }
 
   render(){
