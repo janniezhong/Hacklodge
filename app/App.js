@@ -287,6 +287,9 @@ class CameraScreen extends React.Component {
       // })
       
       let localURI = imagePromise.uri;
+      console.log("printing imagePromise");
+      console.log("imagePromise");
+
       console.log("printing localURI:");
       console.log(localURI);
       this.props.navigation.navigate('Preview', {imgType: 'taken', imgURI: localURI,});
@@ -620,11 +623,6 @@ class PhotoLibrary extends React.Component {
 //Preview Screen
 
 class Preview extends React.Component {
-
-  // renderBoxScreen() {
-  //   console.log("Made it to BoxScreen rendering!")
-  //   return <BoxScreen navigation={this.props.navigation} menuId = {this.props.navigation.getParam('menuId')} menuType='example' />;
-  // }
   static navigationOptions = ({ navigation }) => { title: 'Preview' }; 
 
   render(){
@@ -670,7 +668,7 @@ class Preview extends React.Component {
 
 class BoxScreen extends React.Component {
 
-  static navigationOptions = ({ navigation }) => { title: 'BoxScreen' };1
+  static navigationOptions = ({ navigation }) => { title: 'Preview' };1
 
   componentDidMount() {
     let formData = new FormData();
@@ -697,10 +695,16 @@ class BoxScreen extends React.Component {
 
   state = {
     boxes: [
-      {top:  0, left: 0,  right: 10,  bottom: 10},
-      {top:  30,left: 30, right: 70,  bottom: 45},
-      {top:  0, left: 20, right: 30,  bottom: 10},
-      {top:  90,left: 90, right: 100, bottom: 100}
+      {'top': 38.0, 'right': 41.74757281553398, 'bottom': 39.37500000000001, 'left': 16.990291262135923},
+      {'top': 40.625, 'right': 38.18770226537217, 'bottom': 42.25, 'left': 16.990291262135923},
+      {'top': 43.125, 'right': 32.038834951456316, 'bottom': 44.49999999999999, 'left': 16.990291262135923},
+      {'top': 45.75, 'right': 38.18770226537217, 'bottom': 47.12499999999999, 'left': 16.990291262135923},
+      {'top': 61.375, 'right': 82.84789644012946, 'bottom': 62.875, 'left': 17.313915857605178},
+      {'top': 63.875, 'right': 82.84789644012946, 'bottom': 66.0, 'left': 17.313915857605178},
+      {'top': 66.125, 'right': 82.84789644012946, 'bottom': 68.0, 'left': 17.313915857605178},
+      {'top': 82.375, 'right': 82.52427184466019, 'bottom': 84.0, 'left': 16.990291262135923},
+      {'top': 84.125, 'right': 82.52427184466019, 'bottom': 87.625, 'left': 15.53398058252427},
+      {'top': 87.5, 'right': 82.52427184466019, 'bottom': 89.0, 'left': 16.990291262135923}
     ]
   }
 
@@ -713,10 +717,7 @@ class BoxScreen extends React.Component {
 
       <View style = {{ 
         height: 500, 
-        width: 400, 
-        backgroundColor:'#00FF00', 
-        borderColor:'#000000', 
-        borderWidth:3
+        width: 400,
       }} >
         <Image style={{
           position:'absolute',
@@ -858,6 +859,17 @@ class Details extends React.Component{
   }
 }
 
+
+const withHeader = {
+  headerStyle: {
+    backgroundColor:myRed,
+  },
+  headerTitleStyle: {
+    fontWeight:'normal',
+    color:'#FFFFFF'
+  },
+};
+
 const AppNavigator = createStackNavigator({
   Home: {
     screen: HomeScreen,
@@ -879,43 +891,19 @@ const AppNavigator = createStackNavigator({
   },
   Preview:{
     screen: Preview,
-    navigationOptions: {
-      headerShown:false,
-    }
+    navigationOptions: withHeader,
   },
   BoxScreen:{
     screen: BoxScreen,
-    navigationOptions: {
-      headerShown:false,
-    }
+    navigationOptions: withHeader,
   },
   MenuList:{
     screen: MenuList,
-    navigationOptions: {
-      headerStyle: {
-        backgroundColor:myRed,
-        // headerTintColor:'#FFFFFF',
-      },
-      headerTitleStyle: {
-        fontWeight:'normal',
-        color:'#FFFFFF'
-      }
-      // headerShown:false,
-    }
+    navigationOptions: withHeader,
   },
   Details:{
     screen: Details,
-    navigationOptions: {
-      headerStyle: {
-        backgroundColor:myRed,
-        // headerTintColor:'#FFFFFF',
-      },
-      headerTitleStyle: {
-        fontWeight:'normal',
-        color:'#FFFFFF'
-      }
-      // headerShown:false,
-    }
+    navigationOptions: withHeader,
   },
 },{
   initialRouteName: 'Home',
