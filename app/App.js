@@ -692,6 +692,7 @@ class Preview extends React.Component {
       name:'photo.jpg',
     });
     formData.append('imgType', this.props.navigation.getParam('imgType'));
+    formData.append('menuID', this.props.navigation.getParam('menuID'));
 
     fetch(`${host}/upload`, {
       method: 'POST',
