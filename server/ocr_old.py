@@ -10,12 +10,6 @@ import re
 def ocrmean(item):
 	return 0.5*(item.get('right')+item.get('left'))
 
-def clean_text(rgx_list, text):
-	    new_text = text
-	    for rgx_match in rgx_list:
-	        new_text = re.sub(rgx_match, '', new_text)
-	    return new_text
-
 pytesseract.pytesseract.tesseract_cmd = r'/usr/local/bin/tesseract'
 
 # later: https://57b9f852.ngrok.io/static/menu1.jpeg
@@ -27,12 +21,9 @@ def do_ocr(url):
 	# get image data
 	imgWidth, imgHeight = rawImg.size
 
-	ratio = 1000/imgWidth
+	ratio = 650/imgWidth
 	# ratio = 1
-
-	myImg = rawImg
-	# myImg = myImg.resize((int(imgWidth*ratio), int(imgHeight*ratio)))
-	myImg = myImg.rotate(-90)
+	myImg = rawImg.resize((int(imgWidth*ratio), int(imgHeight*ratio))).rotate(-90)
 
 	imgWidth, imgHeight = myImg.size
 
@@ -67,6 +58,7 @@ def do_ocr(url):
 			'top':    box_data.get('top')[i]
 		})
 
+	print charList
 
 	sortByTop = sorted(charList, key=lambda item: item.get('top'))
 
@@ -90,13 +82,13 @@ def do_ocr(url):
 
 	# exclude words based on different formatting
 
-	# wi = 0
-	# while wi < len(unsortedWords):
-	# 	word = ''.join(map(lambda item: item.get('char'), unsortedWords[wi]))
-	# 	if ''.join(map(lambda item: item.get('char'), unsortedWords[wi])).isupper():
-	# 		del unsortedWords[wi]
-	# 		wi-=1
-	# 	wi+=1
+	wi = 0
+	while wi < len(unsortedWords):
+		word = ''.join(map(lambda item: item.get('char'), unsortedWords[wi]))
+		if ''.join(map(lambda item: item.get('char'), unsortedWords[wi])).isupper():
+			del unsortedWords[wi]
+			wi-=1
+		wi+=1
 
 	# sort words (by left)
 
@@ -125,7 +117,13 @@ def do_ocr(url):
 
 		sortedWords.append(''.join(myWord))
 
-	# finally, clean word
+	# finally, clean words
+
+	def clean_text(rgx_list, text):
+	    new_text = text
+	    for rgx_match in rgx_list:
+	        new_text = re.sub(rgx_match, '', new_text)
+	    return new_text
 
 	regex_list = ['(\\$|[0-9]|\\.)+']
 	# clean_text(regex_list, wordList)
@@ -155,4 +153,3 @@ def do_ocr(url):
 
 # print do_ocr('./static/menu1.jpeg')
 # print do_ocr('./uploads/photo.jpg')
-# print do_ocr('./static/cameratest.jpg')
