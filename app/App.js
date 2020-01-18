@@ -948,7 +948,7 @@ class Details extends React.Component{
       <ScrollView contentContainerStyle={{alignItems:'center'}}> 
       <Image
       source = {{uri: this.state.data.image_url}}
-      style = {{resizeMode: 'cover', alignItems: 'center', padding: 3, width: editWidth, height: editHeight, marginTop: 22, marginBottom: 50,}}
+      style = {{resizeMode: 'cover', alignItems: 'center', padding: 3, width: this.state.editWidth, height: this.state.editHeight, marginTop: 22, marginBottom: 50,}}
       />
       <Text style = {{alignItems: 'center', justifyContent: 'center', color: '#FF6E66', fontWeight: 'bold', fontSize: 30, fontFamily: "SnellRoundhand-Bold"}}>{this.state.data.title}</Text>
       <Text style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}>{this.state.data.description}</Text>
