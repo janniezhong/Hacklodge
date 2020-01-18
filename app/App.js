@@ -498,8 +498,7 @@ class HomeScreen extends React.Component{
             onRequestClose={() => {
               Alert.alert('Modal has been closed.');
           }}>
-            <View style={{flex: 1, flexDirection: 'column'}}>
-              <View style = {{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFC8BE'}}>
+            <View style={{flex: 1, flexDirection: 'column', backgroundColor: 'rgba(0, 0, 0, 0.5)', position: "relative", top: '62%'}}>
                 <TouchableOpacity style={styles.button}
                   onPress = {() => {
                     console.log("pressed the first button!");
@@ -509,8 +508,6 @@ class HomeScreen extends React.Component{
                 >
                   <Text style={styles.buttonText}>Example Menu 1</Text>
                 </TouchableOpacity>
-              </View>
-              <View style = {{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFC8BE'}}>
                 <TouchableOpacity style={styles.button}
                   onPress = {() => {
                     console.log("pressed the second button!");
@@ -520,8 +517,6 @@ class HomeScreen extends React.Component{
                 >
                   <Text style={styles.buttonText}>Example Menu 2</Text>
                 </TouchableOpacity>
-              </View>
-              <View style = {{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFC8BE'}}>
                 <TouchableOpacity style={styles.button}
                   onPress = {() => {
                     console.log("pressed the third button!");
@@ -531,8 +526,12 @@ class HomeScreen extends React.Component{
                 >
                   <Text style={styles.buttonText}>Example Menu 3</Text>
                 </TouchableOpacity>
+                <Button title= "Back" color = '#FFE6E6'
+                  onPress = {() => {
+                    this.setModalVisible(false);
+                  }}
+                />
               </View>
-            </View>
           </Modal>
       </View>
       </View>
@@ -679,6 +678,11 @@ class PhotoLibrary extends React.Component {
 
 class Preview extends React.Component {
   static navigationOptions = ({ navigation }) => { title: 'Preview' }; 
+
+  state = {
+    disabled: true,
+    buttonText: "Loading...",
+  };
   componentDidMount() {
     const formData = new FormData();
     formData.append('photo', {
@@ -694,6 +698,8 @@ class Preview extends React.Component {
     .then((response) => response.json())
     .then((result) => {
       console.log('Success:', result);
+      this.setState({disabled: false});
+      this.setState({buttonText: "Next"}); 
     });
   }
   render(){
@@ -728,7 +734,7 @@ class Preview extends React.Component {
       <View title = "Preview" style = {styles.genericView}> 
       <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {{uri:menuPath}} />
       <View style={styles.buttonWrapper, previewStyles.buttonWrapper}>
-        <TouchableOpacity style={styles.button}
+        <TouchableOpacity style={styles.button} disabled = {this.state.disabled}
           onPress= {() => {
             this.props.navigation.navigate('BoxScreen', {
               navigation:this.props.navigation,
@@ -737,7 +743,7 @@ class Preview extends React.Component {
             );
           }}
         >
-          <Text style={styles.buttonText}>Next</Text>
+          <Text style={styles.buttonText}>{this.state.buttonText}</Text>
         </TouchableOpacity>
         </View>
       </View>
