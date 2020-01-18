@@ -10,6 +10,7 @@ import * as Permissions from 'expo-permissions';
 import ListItem from './ListItem';
 //import ImagePicker from 'react-native-image-picker';
 import * as ImagePicker from 'expo-image-picker';
+import { Dimensions } from 'react-native';
 
 
 
@@ -690,6 +691,7 @@ class Preview extends React.Component {
       type:'image/jpeg',
       name:'photo.jpg',
     });
+    formData.append('imgType', this.props.navigation.getParam('imgType'));
 
     fetch(`${host}/upload`, {
       method: 'POST',
@@ -716,11 +718,11 @@ class Preview extends React.Component {
       // menuPath = `${host}/static/menu1.jpg`;
       console.log(menuPath);
       if (exMenuID == 1){
-        menuPath = 'https://marketplace.canva.com/EADaoJv_rFk/1/0/618w/canva-red-brown-simple-mexican-menu-6nt2YAg2IKI.jpg';
+        menuPath = `${host}/static/menu1.jpg`;
       } else if (exMenuID == 2){
-        menuPath = 'https://cdn.mycreativeshop.com/images/templates/17025/simple-dinner-party-menu-template-32768-flat1.jpg';
+        menuPath = `${host}/static/menu2.jpg`;
       } else {
-        menuPath = 'https://images.template.net/wp-content/uploads/2015/04/Italian-Restaurant-Menu-Template-in-Word.jpg';
+        menuPath = `${host}/static/menu3.jpg`;
       }
     } else {
       console.log("u fuked up bro");
@@ -904,6 +906,10 @@ class Details extends React.Component{
 
   state = {
     data: { image_url: '', image_url: '', description:'' },
+    width: 1,
+    height: 1,
+    editWidth: 1,
+    editHeight: 1,
   }
   static navigationOptions = ({ navigation }) => {
     return {
@@ -924,6 +930,10 @@ class Details extends React.Component{
     .then((data) => {
       console.log('Success:', data);
       this.setState({data: data});
+      let deviceWidth = Dimensions.get('window').width;
+      Image.getSize(this.state.data.image_url, (width, height) => {this.setState({width, height})});
+      this.setState({editWidth:deviceWidth*0.9});
+      this.setState({editHeight:deviceWidth*0.9*this.state.height/this.state.width});
     })
     .catch((error) => {
       console.error(error);
@@ -935,17 +945,41 @@ class Details extends React.Component{
 
     return(
       <ScrollView contentContainerStyle={{alignItems:'center'}}> 
-      <Text style = {{alignItems: 'center', justifyContent: 'center'}}>{this.state.data.title}</Text>
       <Image
       source = {{uri: this.state.data.image_url}}
-      style = {{resizeMode: 'contain', width: 150, height: 150, alignItems: 'center',}}
+      style = {{resizeMode: 'cover', alignItems: 'center', padding: 3, width: editWidth, height: editHeight, marginTop: 22, marginBottom: 50,}}
       />
+      <Text style = {{alignItems: 'center', justifyContent: 'center', color: '#FF6E66', fontWeight: 'bold', fontSize: 30, fontFamily: "SnellRoundhand-Bold"}}>{this.state.data.title}</Text>
       <Text style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}>{this.state.data.description}</Text>
       </ScrollView>
       );
   }
 }
 
+
+class Details2 extends React.Component{
+  state = {
+    width: 1,
+    height: 1,
+  }
+  
+  render(){
+    let deviceWidth = Dimensions.get('window').width;
+    Image.getSize("https://x9wsr1khhgk5pxnq1f1r8kye-wpengine.netdna-ssl.com/wp-content/uploads/Scrambled-with-Milk-930x620.jpg", (width, height) => {this.setState({width, height})});
+    let editWidth = deviceWidth*0.9;
+    let editHeight = deviceWidth*0.9*this.state.height/this.state.width;
+    return(
+      <ScrollView contentContainerStyle={{alignItems:'center'}}> 
+        <Image
+          source = {{uri: "https://x9wsr1khhgk5pxnq1f1r8kye-wpengine.netdna-ssl.com/wp-content/uploads/Scrambled-with-Milk-930x620.jpg"}}
+          style = {{resizeMode: 'cover', alignItems: 'center', padding: 3, width: editWidth, height: editHeight, marginTop: 22, marginBottom: 50,}}
+        />
+        <Text style = {{alignItems: 'center', justifyContent: 'center', color: '#FF6E66', fontWeight: 'bold', fontSize: 30, fontFamily: "SnellRoundhand-Bold"}}>Scrambled Eggs</Text>
+        <Text style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}>Scrambled eggs are great. Wow!</Text>
+      </ScrollView>
+      );
+  }
+}
 
 const withHeader = {
   headerStyle: {
@@ -990,6 +1024,10 @@ const AppNavigator = createStackNavigator({
   },
   Details:{
     screen: Details,
+    navigationOptions: withHeader,
+  },
+  Details2:{
+    screen: Details2,
     navigationOptions: withHeader,
   },
 },{
