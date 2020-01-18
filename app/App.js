@@ -499,7 +499,7 @@ class HomeScreen extends React.Component{
             onRequestClose={() => {
               Alert.alert('Modal has been closed.');
           }}>
-            <View style={{flex: 1, flexDirection: 'column', backgroundColor: 'rgba(0, 0, 0, 0.5)', position: "relative", top: '62%'}}>
+            <View style={{flex: 1, flexDirection: 'column', backgroundColor: 'rgba(0, 0, 0, 0.5)', position: "relative", top: '62%', alignItems: "center", alignContent: "center",}}>
                 <TouchableOpacity style={styles.button}
                   onPress = {() => {
                     console.log("pressed the first button!");
