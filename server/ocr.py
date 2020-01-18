@@ -10,24 +10,48 @@ import re
 def ocrmean(item):
 	return 0.5*(item.get('right')+item.get('left'))
 
+def clean_text(rgx_list, text):
+	    new_text = text
+	    for rgx_match in rgx_list:
+	        new_text = re.sub(rgx_match, '', new_text)
+	    return new_text
+
 pytesseract.pytesseract.tesseract_cmd = r'/usr/local/bin/tesseract'
 
 # later: https://57b9f852.ngrok.io/static/menu1.jpeg
 
 def do_ocr(url):
 	teststr_1 = url
-	myImg = Image.open(teststr_1)
+	rawImg = Image.open(teststr_1)
 
 	# get image data
+	imgWidth, imgHeight = rawImg.size
+
+	ratio = 1000/imgWidth
+	# ratio = 1
+
+	myImg = rawImg
+	# myImg = myImg.resize((int(imgWidth*ratio), int(imgHeight*ratio)))
+	myImg = myImg.rotate(-90)
+
 	imgWidth, imgHeight = myImg.size
 
-	pdf = pytesseract.image_to_pdf_or_hocr(teststr_1, extension='pdf')
-	with open('test.pdf', 'w+b') as f:
-		f.write(pdf) # pdf type is bytes by default
+	print 'width ' + str(imgWidth)
+	print 'height '+ str(imgHeight)
 
-	return pytesseract.image_to_string(myImg)
+	# pdf = pytesseract.image_to_pdf_or_hocr(teststr_1, extension='pdf')
+	# with open('test.pdf', 'w+b') as f:
+	# 	f.write(pdf) # pdf type is bytes by default
+
+	# return pytesseract.image_to_string(myImg)
 
 	box_data = pytesseract.image_to_boxes(myImg, output_type=pytesseract.Output.DICT)
+
+	print pytesseract.image_to_string(myImg)
+
+	pdf = pytesseract.image_to_pdf_or_hocr(myImg, extension='pdf')
+	with open('test.pdf', 'w+b') as f:
+		f.write(pdf) # pdf type is bytes by default
 
 	numChars = len(box_data.get('right'))
 
@@ -43,7 +67,6 @@ def do_ocr(url):
 			'top':    box_data.get('top')[i]
 		})
 
-	print charList
 
 	sortByTop = sorted(charList, key=lambda item: item.get('top'))
 
@@ -67,13 +90,13 @@ def do_ocr(url):
 
 	# exclude words based on different formatting
 
-	wi = 0
-	while wi < len(unsortedWords):
-		word = ''.join(map(lambda item: item.get('char'), unsortedWords[wi]))
-		if ''.join(map(lambda item: item.get('char'), unsortedWords[wi])).isupper():
-			del unsortedWords[wi]
-			wi-=1
-		wi+=1
+	# wi = 0
+	# while wi < len(unsortedWords):
+	# 	word = ''.join(map(lambda item: item.get('char'), unsortedWords[wi]))
+	# 	if ''.join(map(lambda item: item.get('char'), unsortedWords[wi])).isupper():
+	# 		del unsortedWords[wi]
+	# 		wi-=1
+	# 	wi+=1
 
 	# sort words (by left)
 
@@ -102,13 +125,7 @@ def do_ocr(url):
 
 		sortedWords.append(''.join(myWord))
 
-	# finally, clean words
-
-	def clean_text(rgx_list, text):
-	    new_text = text
-	    for rgx_match in rgx_list:
-	        new_text = re.sub(rgx_match, '', new_text)
-	    return new_text
+	# finally, clean word
 
 	regex_list = ['(\\$|[0-9]|\\.)+']
 	# clean_text(regex_list, wordList)
@@ -130,10 +147,12 @@ def do_ocr(url):
 	returnDict = {
 		"item_list": itemList,
 	}
-	print imgWidth
-	print imgHeight
+
+	print 'returning from OCR:'
+	print returnDict
 
 	return returnDict
 
 # print do_ocr('./static/menu1.jpeg')
-print do_ocr('./uploads/photo.jpg')
+# print do_ocr('./uploads/photo.jpg')
+# print do_ocr('./static/cameratest.jpg')

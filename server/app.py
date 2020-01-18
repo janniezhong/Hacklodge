@@ -53,7 +53,10 @@ def info():
 
 @app.route("/ocr", methods=['POST'])
 def ocr():
-	menuid = request.form.get('menu_id')
+
+	print request.form.get('imgType')
+
+	# menuid = request.form.get('menu_id')
 
 	myUrl = './uploads/photo.jpg'	
 
@@ -75,7 +78,8 @@ def upload():
 
 	request.files.get('photo').save('uploads/photo.jpg')
 
-	return '{"message":"successfully uploaded"}'
+	print 'upload should have worked (?)'
+	return '{"status":"success"}'
 
 
 # for debugging
