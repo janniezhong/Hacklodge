@@ -28,6 +28,8 @@ import { emitNotification } from 'expo/build/Notifications/Notifications';
 
 //constants
 
+console.disableYellowBox = true; 
+
 const host = 'http://57b9f852.ngrok.io'
 const PHOTOS_DIR = FileSystem.documentDirectory + 'photos';
 const images = {
