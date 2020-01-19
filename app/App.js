@@ -931,10 +931,13 @@ class Details extends React.Component{
     .then((data) => {
       console.log('Success:', data);
       this.setState({data: data});
+
+
       let deviceWidth = Dimensions.get('window').width;
       Image.getSize(this.state.data.image_url, (width, height) => {this.setState({width, height})});
       this.setState({editWidth:deviceWidth*0.9});
       this.setState({editHeight:deviceWidth*0.9*this.state.height/this.state.width});
+      console.log("set the edited width and height");
     })
     .catch((error) => {
       console.error(error);
@@ -948,10 +951,10 @@ class Details extends React.Component{
       <ScrollView contentContainerStyle={{alignItems:'center'}}> 
       <Image
       source = {{uri: this.state.data.image_url}}
-      style = {{resizeMode: 'cover', alignItems: 'center', padding: 3, width: this.state.editWidth, height: this.state.editHeight, marginTop: 22, marginBottom: 50,}}
+      style = {{resizeMode: 'cover', alignItems: 'center', padding: 3, width: this.state.editWidth, height: this.state.editHeight, marginTop: 22, marginBottom: 30,}}
       />
       <Text style = {{alignItems: 'center', justifyContent: 'center', color: '#FF6E66', fontWeight: 'bold', fontSize: 30, fontFamily: "SnellRoundhand-Bold"}}>{this.state.data.title}</Text>
-      <Text style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}>{this.state.data.description}</Text>
+      <Text style = {{flex:1, alignItems: 'center', justifyContent: 'center', lineHeight: 15*1.5, fontSize: 15, fontFamily: "Baskerville", marginLeft: 10, marginRight: 10, }}>{this.state.data.description}</Text>
       </ScrollView>
       );
   }
@@ -976,7 +979,7 @@ class Details2 extends React.Component{
           style = {{resizeMode: 'cover', alignItems: 'center', padding: 3, width: editWidth, height: editHeight, marginTop: 22, marginBottom: 50,}}
         />
         <Text style = {{alignItems: 'center', justifyContent: 'center', color: '#FF6E66', fontWeight: 'bold', fontSize: 30, fontFamily: "SnellRoundhand-Bold"}}>Scrambled Eggs</Text>
-        <Text style = {{flex:1, alignItems: 'center', justifyContent: 'center'}}>Scrambled eggs are great. Wow!</Text>
+        <Text style = {{flex:1, alignItems: 'center', justifyContent: 'center',  lineHeight: 13*1.5, fontSize: 13, fontFamily: "Baskerville",}}>Scrambled eggs are great. Wow!</Text>
       </ScrollView>
       );
   }
