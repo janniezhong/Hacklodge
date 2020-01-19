@@ -6,153 +6,122 @@ except ImportError:
 import pytesseract
 import re
 
-# basic arithmetic mean helper function
-def ocrmean(item):
-	return 0.5*(item.get('right')+item.get('left'))
-
-def clean_text(rgx_list, text):
-	    new_text = text
-	    for rgx_match in rgx_list:
-	        new_text = re.sub(rgx_match, '', new_text)
-	    return new_text
-
-pytesseract.pytesseract.tesseract_cmd = r'/usr/local/bin/tesseract'
-
-# later: https://57b9f852.ngrok.io/static/menu1.jpeg
+from pytesseract import Output
+import cv2
+from copy import deepcopy
 
 def do_ocr(url):
-	teststr_1 = url
-	rawImg = Image.open(teststr_1)
 
-	# get image data
-	imgWidth, imgHeight = rawImg.size
+	rgx_list = ['(\\$|[0-9]|\\.)+']
+	def clean_text(text):
+		    new_text = text
+		    for rgx_match in rgx_list:
+		        new_text = re.sub(rgx_match, '', new_text)
+		    return new_text
 
-	ratio = 1000/imgWidth
-	# ratio = 1
+	pytesseract.pytesseract.tesseract_cmd = r'/usr/local/bin/tesseract'
 
-	myImg = rawImg
-	# myImg = myImg.resize((int(imgWidth*ratio), int(imgHeight*ratio)))
-	myImg = myImg.rotate(-90)
+	# later: https://57b9f852.ngrok.io/static/menu1.jpeg
 
-	imgWidth, imgHeight = myImg.size
+	myfile = 'menu1'
+	# url = './static/'+myfile+'.jpg'
+	url = './uploads/photo.jpg'
 
-	print 'width ' + str(imgWidth)
-	print 'height '+ str(imgHeight)
+	print url
+	# myImg = Image.open(url)
+	myImg = cv2.imread(url)
 
-	# pdf = pytesseract.image_to_pdf_or_hocr(teststr_1, extension='pdf')
-	# with open('test.pdf', 'w+b') as f:
-	# 	f.write(pdf) # pdf type is bytes by default
+	# print pytesseract.image_to_string(myImg)
 
-	# return pytesseract.image_to_string(myImg)
+	d = pytesseract.image_to_data(myImg, output_type=Output.DICT)
+	n_boxes = len(d['level'])
 
-	box_data = pytesseract.image_to_boxes(myImg, output_type=pytesseract.Output.DICT)
+	# print d
+	# print 'there are '+str(n_boxes)+' boxes'
 
-	print pytesseract.image_to_string(myImg)
-
-	pdf = pytesseract.image_to_pdf_or_hocr(myImg, extension='pdf')
-	with open('test.pdf', 'w+b') as f:
-		f.write(pdf) # pdf type is bytes by default
-
-	numChars = len(box_data.get('right'))
-
-	# convert dict of lists to list of dicts
-
-	charList = []
-	for i in range(numChars):
-		charList.append({
-			'char':   box_data.get('char')[i],
-			'right':  box_data.get('right')[i],
-			'bottom': box_data.get('bottom')[i],
-			'left':   box_data.get('left')[i],
-			'top':    box_data.get('top')[i]
-		})
-
-
-	sortByTop = sorted(charList, key=lambda item: item.get('top'))
-
-	# this is a two-dimensional array
-	unsortedWords = [[]]
-
-	for i in range(numChars-1):
-		diff = sortByTop[i+1].get('top')-sortByTop[i].get('top')
-		unsortedWords[-1].append(sortByTop[i])
-
-		if diff > 7: # 
-			unsortedWords.append([])
-
-		if i == numChars-1:
-			unsortedWords[-1].append(sortByTop[-1])
-
-	print 'number of unsorted words: '+str(len(unsortedWords))
-
-	if len(unsortedWords[-1]) == 0:
-		del unsortedWords[-1]
-
-	# exclude words based on different formatting
-
-	# wi = 0
-	# while wi < len(unsortedWords):
-	# 	word = ''.join(map(lambda item: item.get('char'), unsortedWords[wi]))
-	# 	if ''.join(map(lambda item: item.get('char'), unsortedWords[wi])).isupper():
-	# 		del unsortedWords[wi]
-	# 		wi-=1
-	# 	wi+=1
-
-	# sort words (by left)
-
-	sortedWords = []
-	boxes = []
 	wordList = []
+	# convert these into
+	for i in range(n_boxes):
+	    (x, y, w, h, word) = (d['left'][i], d['top'][i], d['width'][i], d['height'][i], d['text'][i])
+	    (wordNum, lineNum, blockNum) = (d['word_num'][i], d['line_num'][i], d['block_num'][i])
 
-	for i in range(len(unsortedWords)):
-		sortedWord = sorted(unsortedWords[i], key=ocrmean)
+	    wordList.append({
+	    	'x': x, 'y': y, 'w': w, 'h': h,
+	    	'word': word,
+	    	'wordNum': wordNum, 'lineNum': lineNum, 'blockNum': blockNum
+	    })
+	    
+	    # print 'x:'+str(x), '\ty:'+str(y), '\tw:'+str(w), '\th:'+str(h), '\tword:'+word, '\t\t\tword:'+str(wordNum), '\tline:'+str(lineNum), '\tblock:'+str(blockNum)
+	    # cv2.rectangle(myImg, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-		# generate boxes
-		boxes.append({'left':-1, 'right': -1, 'top':-1, 'bottom':-1})
-		boxes[i]['left'] =  (sortedWord[0]['left']/imgWidth)*100;
-		boxes[i]['right'] = (sortedWord[-1]['right']/imgWidth)*100;
+	# sort by blockNum, then wordNum
+	sortedList = sorted(wordList, key=lambda item: (item.get('blockNum'), item.get('lineNum'), item.get('wordNum')))
 
-		boxes[i]['top']   = 100-(max(sortedWord, key=lambda item: item['top'])['top']/imgHeight)*100;
-		boxes[i]['bottom']= 100-(min(sortedWord, key=lambda item: item['bottom'])['bottom']/imgHeight)*100;
+	# split list into individual words
+	lines = [[]]
+	lastIndex = (0, 0)
 
-		# now, add spaces
-		myWord = []
-		for j in range(len(sortedWord)-1):
-			myWord.append(sortedWord[j].get('char'))
-			diff = sortedWord[j+1].get('left')-sortedWord[j].get('right')
-			if(diff > 4):
-				myWord.append(' ')
+	for item in sortedList:
+		# print str((item.get('blockNum'), item.get('lineNum')))
+		index = (item.get('blockNum'), item.get('lineNum'))
+		if index != lastIndex:
+			# add a new line
+			lines.append([item])
+		else: 
+			lines[-1].append(item)
+		lastIndex = deepcopy(index)
 
-		sortedWords.append(''.join(myWord))
+	# clean out empty strings, arrays, non-words
+	wi = 0
+	while wi < len(lines):
+		line = lines[wi]
+		j = 0
+		while j < len(line):
+			if len(clean_text(line[j].get('word')))==0:
+				# print "found an empty word "+str(line[j])
+				del line[j]
+				j-=1
+			j+=1
 
-	# finally, clean word
+		if len(line) == 0:
+			del lines[wi]
+			wi-=1
+		wi+=1
 
-	regex_list = ['(\\$|[0-9]|\\.)+']
-	# clean_text(regex_list, wordList)
+	# clean out non-words
 
-	wordList = map(lambda item: clean_text(regex_list, item), sortedWords)
+	imgHeight = myImg.shape[0]
+	imgWidth =  myImg.shape[1]
 
-	# TODO remove this dumb fix for trailing spaces and trailing element (and reverse)
-	# [u'Carne Asada Steak ', u'Quesadilla ', u'Carne Asada Plate ', u'Smothered Burrito ', u'Vegetarian Burrito ', u'Fiesta Chicken Burrito ', u'Barbacoa Burrit', u'Beef Burrit', u'Migas con Huev', u'Huevos ocn Chariz', '']
+	def getBox(line):
+		minHozEl = min(line, key=lambda word: word.get('x'))
+		maxHozEl = max(line, key=lambda word: word.get('x')+word.get('w'))
 
-	# del wordList[-1]
+		minVerEl = min(line, key=lambda word: word.get('y'))
+		maxVerEl = max(line, key=lambda word: word.get('y')+word.get('h'))
 
-	for i in range(len(wordList)):
-		wordList[i] = wordList[i].strip()
+		return {
+			'left':100*minHozEl.get('x')/imgHeight,
+			'top': 100*minVerEl.get('y')/imgHeight,
+			'width': 100*(maxHozEl.get('x')+maxHozEl.get('w')-minHozEl.get('x'))/imgWidth,
+			'height':100*(maxVerEl.get('y')+maxVerEl.get('h')-minVerEl.get('y'))/imgWidth
+		}
 
-	itemList = [{'word': wordList[i], 'box':boxes[i]} for i in range(len(wordList))]
+	data = map(lambda line: {
+		'word': ' '.join(map(lambda item: item.get('word'), line)),
+		'box': getBox(line)
+	}, lines)
 
-	itemList.reverse()
+	print data
 
-	returnDict = {
-		"item_list": itemList,
-	}
+	return { 'item_list': data }
 
-	print 'returning from OCR:'
-	print returnDict
+	# for datum in data:
+	# 	box = datum.get('box')
+	# 	print (box, datum.get('word'))
+		# cv2.rectangle(myImg, (box.get('left'), box.get('top')), (box.get('left')+box.get('width'), box.get('top')+box.get('height')), (0, 255, 0), 2)
 
-	return returnDict
+	# cv2.imwrite('./static/'+myfile+'_cv.jpg', myImg)
 
-# print do_ocr('./static/menu1.jpeg')
-# print do_ocr('./uploads/photo.jpg')
-# print do_ocr('./static/cameratest.jpg')
+
+# do_ocr('hello')

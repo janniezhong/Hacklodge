@@ -810,8 +810,8 @@ class BoxScreen extends React.Component {
               left:`${item.box.left}%`,
               borderColor:'#FF0000',
               borderWidth:2,
-              width:`${item.box.right-item.box.left}%`,
-              height:`${item.box.bottom-item.box.top}%`,
+              width:`${item.box.width}%`,
+              height:`${item.box.height}%`,
             }}></View>
           ))
         }
