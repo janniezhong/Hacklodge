@@ -585,8 +585,9 @@ class PhotoLibrary extends React.Component {
     });
     if (!result.cancelled) {
      this.setState({ image: result.uri });
+     console.log("sent img url along to preview screen");
+     console.log(result.uri);
      this.props.navigation.navigate('Preview', {imgType: 'taken', imgURI: result.uri,})
-
     }
   }
 
@@ -760,6 +761,11 @@ class BoxScreen extends React.Component {
 
   static navigationOptions = ({ navigation }) => { title: 'Preview' };1
 
+  state = {
+    disabled: true,
+    buttonText: "Loading...",
+  };
+
   componentDidMount() {
     fetch(`${host}/ocr`, {
       method:'POST',
@@ -768,6 +774,8 @@ class BoxScreen extends React.Component {
     .then((data) => {
       console.log('Success:', data);
       this.setState({data: data});
+      this.setState({disabled: false});
+      this.setState({buttonText: "Next"}); 
     })
     .catch((error) => {
       console.error(error);
@@ -820,7 +828,7 @@ class BoxScreen extends React.Component {
       {/* <Image style = {{ resizeMode: 'contain', height: 500, width: 400, }} source = {{uri:navigation.getParam('imgURI')}} /> */}
 
       <View style={styles.buttonWrapper, previewStyles.buttonWrapper}>
-        <TouchableOpacity style={styles.button}
+        <TouchableOpacity style={styles.button} disabled = {this.state.disabled}
           onPress= {() => {
             this.props.navigation.navigate('MenuList', {
               navigation:this.props.navigation,
@@ -828,7 +836,7 @@ class BoxScreen extends React.Component {
             });
           }}
         >
-          <Text style={styles.buttonText}>Next</Text>
+          <Text style={styles.buttonText}>{this.state.buttonText}</Text>
         </TouchableOpacity>
         </View>
       </View>
@@ -951,7 +959,7 @@ class Details extends React.Component{
       <ScrollView contentContainerStyle={{alignItems:'center'}}> 
       <Image
       source = {{uri: this.state.data.image_url}}
-      style = {{resizeMode: 'cover', alignItems: 'center', padding: 3, width: this.state.editWidth, height: this.state.editHeight, marginTop: 22, marginBottom: 30,}}
+      style = {{resizeMode: 'cover', alignItems: 'center', padding: 3, width: 200, height: 200, marginTop: 22, marginBottom: 30,}}
       />
       <Text style = {{alignItems: 'center', justifyContent: 'center', color: '#FF6E66', fontWeight: 'bold', fontSize: 30, fontFamily: "SnellRoundhand-Bold"}}>{this.state.data.title}</Text>
       <Text style = {{flex:1, alignItems: 'center', justifyContent: 'center', lineHeight: 15*1.5, fontSize: 15, fontFamily: "Baskerville", marginLeft: 10, marginRight: 10, }}>{this.state.data.description}</Text>
@@ -977,7 +985,7 @@ class Details2 extends React.Component{
         <Image
           source = {{uri: "https://x9wsr1khhgk5pxnq1f1r8kye-wpengine.netdna-ssl.com/wp-content/uploads/Scrambled-with-Milk-930x620.jpg"}}
           style = {{resizeMode: 'cover', alignItems: 'center', padding: 3, width: editWidth, height: editHeight, marginTop: 22, marginBottom: 50,}}
-        />
+        /> 
         <Text style = {{alignItems: 'center', justifyContent: 'center', color: '#FF6E66', fontWeight: 'bold', fontSize: 30, fontFamily: "SnellRoundhand-Bold"}}>Scrambled Eggs</Text>
         <Text style = {{flex:1, alignItems: 'center', justifyContent: 'center',  lineHeight: 13*1.5, fontSize: 13, fontFamily: "Baskerville",}}>Scrambled eggs are great. Wow!</Text>
       </ScrollView>
