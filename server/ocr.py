@@ -11,6 +11,7 @@ import cv2
 from copy import deepcopy
 
 def do_ocr(url):
+	print "ocr is happening!"
 
 	rgx_list = ['(\\$|[0-9]|\\.)+']
 	def clean_text(text):
@@ -111,6 +112,15 @@ def do_ocr(url):
 		'word': ' '.join(map(lambda item: item.get('word'), line)),
 		'box': getBox(line)
 	}, lines)
+
+	# clean all caps
+
+	wi = 0
+	while wi<len(data):
+		if data[wi].get('word').isupper() or len(data[wi].get('word').strip())==0:
+			del data[wi]
+			wi-=1
+		wi+=1
 
 	print data
 

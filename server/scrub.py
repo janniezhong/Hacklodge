@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import re
 
 GOOGLE_CX_STR = "017764573668867698617:wfsi6hryv8w"
-GOOGLE_API_KEY = "AIzaSyC5XBcVJYQeAvln406kzMzTGJwFEwyZQ9I"
+GOOGLE_API_KEY = "AIzaSyAV7jfnVb8mb98XYHhaB7bf8doscF4Wt0U"
 
 # get the first result from Google images
 def getImage(name):
@@ -18,6 +18,9 @@ def getImage(name):
 	}
 
 	response = requests.get('https://www.googleapis.com/customsearch/v1', params = parameters)
+
+	print response
+
 	responseObj = response.json()
 	items = responseObj.get('items')
 
@@ -35,7 +38,10 @@ def clean_text(rgx_list, text):
     return new_text
 
 # first get a list of pages from wikipedia, then pick the top one and search that
-def getDescriptionAndTitle(name):
+def getDescriptionAndTitle(myName):
+	name = myName
+	# name = 'scrambled eggs'
+
 	params1 = {
 		"action": "query",
 		"format":  "json",
@@ -87,8 +93,10 @@ def getDescriptionAndTitle(name):
 			"title": name
 		}
 
+
 	return {
 		"description": clean_str,
 		"title": title
 	}
 
+# print getImage('scrambled eggs')

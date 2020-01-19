@@ -40,13 +40,12 @@ def boxes():
 # - (string) description of dish
 @app.route("/info", methods=['POST'])
 def info():
-	return json.dumps({
-		'title': "Scrambled Eggs",
-		'description': "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus reprehenderit quo maiores aut. Expedita dolorem, adipisci ipsum veritatis unde corporis illum quasi, aut delectus soluta repellendus. Quam fuga, quaerat veritatis.",
-		'image_url':"https://www.theflavorbender.com/wp-content/uploads/2018/08/Scrambled-Eggs-Featured-500x375.jpg"
-	})
-
-
+	# return json.dumps({
+	# 	'title': "Scrambled Eggs",
+	# 	'description': "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus reprehenderit quo maiores aut. Expedita dolorem, adipisci ipsum veritatis unde corporis illum quasi, aut delectus soluta repellendus. Quam fuga, quaerat veritatis.",
+	# 	'image_url':"https://www.theflavorbender.com/wp-content/uploads/2018/08/Scrambled-Eggs-Featured-500x375.jpg"
+	# })
+	
 	name = request.form.get('name')
 	image_str = getImage(name)
 	desc_obj = getDescriptionAndTitle(name)
