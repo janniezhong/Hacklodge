@@ -1,0 +1,26 @@
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 400 None
+ERROR:concurrent.futures:exception calling callback for <Future at 0x10edd0350 state=finished raised RefreshError>
+Traceback (most recent call last):
+  File "/Users/alan/Library/Python/2.7/lib/python/site-packages/concurrent/futures/_base.py", line 331, in _invoke_callbacks
+    callback(self)
+  File "/Users/alan/Library/Python/2.7/lib/python/site-packages/google/auth/transport/grpc.py", line 75, in wrapped
+    callback(future.result(), None)
+  File "/Users/alan/Library/Python/2.7/lib/python/site-packages/concurrent/futures/_base.py", line 455, in result
+    return self.__get_result()
+  File "/Users/alan/Library/Python/2.7/lib/python/site-packages/concurrent/futures/thread.py", line 63, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/Users/alan/Library/Python/2.7/lib/python/site-packages/google/auth/transport/grpc.py", line 67, in _get_authorization_headers
+    self._request, context.method_name, context.service_url, headers
+  File "/Users/alan/Library/Python/2.7/lib/python/site-packages/google/auth/credentials.py", line 124, in before_request
+    self.refresh(request)
+  File "/Users/alan/Library/Python/2.7/lib/python/site-packages/google/oauth2/service_account.py", line 334, in refresh
+    access_token, expiry, _ = _client.jwt_grant(request, self._token_uri, assertion)
+  File "/Users/alan/Library/Python/2.7/lib/python/site-packages/google/oauth2/_client.py", line 153, in jwt_grant
+    response_data = _token_endpoint_request(request, token_uri, body)
+  File "/Users/alan/Library/Python/2.7/lib/python/site-packages/google/oauth2/_client.py", line 124, in _token_endpoint_request
+    _handle_error_response(response_body)
+  File "/Users/alan/Library/Python/2.7/lib/python/site-packages/google/oauth2/_client.py", line 60, in _handle_error_response
+    raise exceptions.RefreshError(error_details, response_body)
+RefreshError: ('invalid_grant: Robot is disabled.', u'{\n  "error": "invalid_grant",\n  "error_description": "Robot is disabled."\n}')
