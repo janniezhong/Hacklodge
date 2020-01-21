@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
 
 //Camera Screen
 
-class CameraScreen extends React.Component {
+class Capture extends React.Component {
   state = {
     flash: 'off',
     zoom: 0,
@@ -473,7 +473,7 @@ class HomeScreen extends React.Component{
 
         <View style = {styles.buttonWrapper}>
           <TouchableOpacity style={styles.button}
-            onPress = {() => this.props.navigation.navigate('CameraScreen', {imgType: 'taken',})}
+            onPress = {() => this.props.navigation.navigate('Capture', {imgType: 'taken',})}
           >
             <Text style={styles.buttonText}>Take Picture</Text>
           </TouchableOpacity>
@@ -733,7 +733,7 @@ class Preview extends React.Component {
     }
     console.log(menuPath);
 
-    //const renderBox = this.renderBoxScreen();
+    //const renderBox = this.renderRendering();
     //console.log(menuPath);
     // menuPath = require('./menus/wine-list.jpeg');
     return (
@@ -742,7 +742,7 @@ class Preview extends React.Component {
       <View style={styles.buttonWrapper, previewStyles.buttonWrapper}>
         <TouchableOpacity style={styles.button} disabled = {this.state.disabled}
           onPress= {() => {
-            this.props.navigation.navigate('BoxScreen', {
+            this.props.navigation.navigate('Rendering', {
               navigation:this.props.navigation,
               imgType: navigation.getParam('imgType'), 
               imgURI: menuPath}
@@ -759,7 +759,7 @@ class Preview extends React.Component {
 
 //Box Screen
 
-class BoxScreen extends React.Component {
+class Rendering extends React.Component {
 
   static navigationOptions = ({ navigation }) => { title: 'Preview' };1
 
@@ -832,7 +832,7 @@ class BoxScreen extends React.Component {
       <View style={styles.buttonWrapper, previewStyles.buttonWrapper}>
         <TouchableOpacity style={styles.button} disabled = {this.state.disabled}
           onPress= {() => {
-            this.props.navigation.navigate('MenuList', {
+            this.props.navigation.navigate('Analysis', {
               navigation:this.props.navigation,
               imgURI: navigation.getParam('menuURI'),
             });
@@ -847,9 +847,9 @@ class BoxScreen extends React.Component {
 }
 
 
-//MenuList Preview
+//Analysis Preview
 
-class MenuList extends React.Component{
+class Analysis extends React.Component{
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Menu Items'
@@ -1012,8 +1012,8 @@ const AppNavigator = createStackNavigator({
       headerShown:false,
     }
   },
-  CameraScreen:{
-    screen: CameraScreen,
+  Capture:{
+    screen: Capture,
     navigationOptions: {
       headerShown:false,
     }
@@ -1028,12 +1028,12 @@ const AppNavigator = createStackNavigator({
     screen: Preview,
     navigationOptions: withHeader,
   },
-  BoxScreen:{
-    screen: BoxScreen,
+  Rendering:{
+    screen: Rendering,
     navigationOptions: withHeader,
   },
-  MenuList:{
-    screen: MenuList,
+  Analysis:{
+    screen: Analysis,
     navigationOptions: withHeader,
   },
   Details:{
