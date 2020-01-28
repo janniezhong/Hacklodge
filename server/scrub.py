@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup
 import re
 
 GOOGLE_CX_STR = "017764573668867698617:wfsi6hryv8w"
-GOOGLE_API_KEY = "AIzaSyAV7jfnVb8mb98XYHhaB7bf8doscF4Wt0U"
+GOOGLE_API_KEY = "***"
+		       
 
 # get the first result from Google images
 def getImage(name):
