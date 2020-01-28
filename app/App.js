@@ -30,7 +30,7 @@ import { emitNotification } from 'expo/build/Notifications/Notifications';
 
 console.disableYellowBox = true; 
 
-const host = 'http://57b9f852.ngrok.io'
+const host = 'http://a04db7f4.ngrok.io'
 const PHOTOS_DIR = FileSystem.documentDirectory + 'photos';
 const images = {
   menuOne: require
